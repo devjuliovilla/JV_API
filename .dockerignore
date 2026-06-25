@@ -1,0 +1,7 @@
+**/.git
+**/.vs
+**/bin
+**/obj
+**/.env
+**/node_modules
+**/App_Data
