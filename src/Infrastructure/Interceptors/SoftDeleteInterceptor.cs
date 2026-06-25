@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Domain.Common;
+using Domain.Entities;
 
 namespace Infrastructure.Interceptors;
 
@@ -27,7 +28,7 @@ public class SoftDeleteInterceptor : SaveChangesInterceptor
 
         foreach (var entry in entries)
         {
-            if (entry.State == EntityState.Deleted)
+            if (entry.State == EntityState.Deleted && entry.Entity is not LogEntry)
             {
                 entry.State = EntityState.Modified;
                 entry.Entity.Deleted = true;

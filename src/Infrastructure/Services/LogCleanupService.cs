@@ -1,0 +1,87 @@
+using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+namespace Infrastructure.Services;
+
+public class LogCleanupOptions
+{
+    public const string Section = "LogCleanup";
+    public int RetentionDays { get; set; } = 7;
+    public int RunIntervalHours { get; set; } = 24;
+}
+
+public interface ILogCleanupService
+{
+    Task<int> DeleteExpiredAsync(DateTime utcNow, CancellationToken cancellationToken = default);
+}
+
+public class LogCleanupService(AppDbContext dbContext, IOptions<LogCleanupOptions> options) : ILogCleanupService
+{
+    private readonly AppDbContext _dbContext = dbContext;
+    private readonly LogCleanupOptions _options = options.Value;
+
+    public async Task<int> DeleteExpiredAsync(DateTime utcNow, CancellationToken cancellationToken = default)
+    {
+        var retentionDays = Math.Max(1, _options.RetentionDays);
+        var cutoff = utcNow.AddDays(-retentionDays);
+        var expiredLogs = await _dbContext.Logs
+            .Where(x => x.CreatedAt < cutoff)
+            .ToListAsync(cancellationToken);
+
+        if (expiredLogs.Count == 0)
+            return 0;
+
+        _dbContext.Logs.RemoveRange(expiredLogs);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return expiredLogs.Count;
+    }
+}
+
+public class LogCleanupBackgroundService(
+    IServiceScopeFactory scopeFactory,
+    IOptions<LogCleanupOptions> options,
+    ILogger<LogCleanupBackgroundService> logger) : BackgroundService
+{
+    private readonly IServiceScopeFactory _scopeFactory = scopeFactory;
+    private readonly LogCleanupOptions _options = options.Value;
+    private readonly ILogger<LogCleanupBackgroundService> _logger = logger;
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        await RunCleanupAsync(stoppingToken);
+
+        var intervalHours = Math.Max(1, _options.RunIntervalHours);
+        using var timer = new PeriodicTimer(TimeSpan.FromHours(intervalHours));
+
+        while (await timer.WaitForNextTickAsync(stoppingToken))
+        {
+            await RunCleanupAsync(stoppingToken);
+        }
+    }
+
+    private async Task RunCleanupAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var cleanupService = scope.ServiceProvider.GetRequiredService<ILogCleanupService>();
+            var deletedCount = await cleanupService.DeleteExpiredAsync(DateTime.UtcNow, cancellationToken);
+
+            if (deletedCount > 0)
+            {
+                _logger.LogInformation("Deleted {DeletedCount} expired log entries.", deletedCount);
+            }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while cleaning expired logs.");
+        }
+    }
+}

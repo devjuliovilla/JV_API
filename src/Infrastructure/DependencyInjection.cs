@@ -27,11 +27,14 @@ public static class DependencyInjection
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.Section));
         services.Configure<SmtpOptions>(configuration.GetSection(SmtpOptions.Section));
         services.Configure<FileStorageOptions>(configuration.GetSection(FileStorageOptions.Section));
+        services.Configure<LogCleanupOptions>(configuration.GetSection(LogCleanupOptions.Section));
 
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IFileStorageService, LocalFileStorageService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<ILogCleanupService, LogCleanupService>();
+        services.AddHostedService<LogCleanupBackgroundService>();
         services.AddHttpContextAccessor();
 
         var jwtOptions = configuration.GetSection(JwtOptions.Section).Get<JwtOptions>();
