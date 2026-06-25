@@ -1,9 +1,0 @@
-<Solution>
-  <Folder Name="/src/">
-    <Project Path="src/JV_API.API/JV_API.API.csproj" />
-    <Project Path="src/JV_API.Domain/JV_API.Domain.csproj" />
-    <Project Path="src/JV_API.Infrastructure/JV_API.Infrastructure.csproj" />
-    <Project Path="src/JV_API.Shared/JV_API.Shared.csproj" />
-    <Project Path="src/JV_API.UnitTests/JV_API.UnitTests.csproj" />
-  </Folder>
-</Solution>
