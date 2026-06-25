@@ -1,0 +1,11 @@
+@baseUrl = http://localhost:5266
+
+### List Products (paginated)
+GET {{baseUrl}}/api/v1/products?page=1&pageSize=10
+
+### List Products with filters
+GET {{baseUrl}}/api/v1/products?page=1&pageSize=10&filters=name@=Product
+
+### List Products with sorting
+GET {{baseUrl}}/api/v1/products?page=1&pageSize=10&sorts=price,desc
+

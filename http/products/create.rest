@@ -1,0 +1,15 @@
+@baseUrl = http://localhost:5266
+@token = {{token}}
+
+### Create Product
+POST {{baseUrl}}/api/v1/products
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "New Product",
+  "description": "A brand new product",
+  "price": 99.99,
+  "categoryId": 1
+}
+

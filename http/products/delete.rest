@@ -1,0 +1,8 @@
+@baseUrl = http://localhost:5266
+@token = {{token}}
+@productId = 1
+
+### Delete Product (soft delete)
+DELETE {{baseUrl}}/api/v1/products/{{productId}}
+Authorization: Bearer {{token}}
+
