@@ -12,6 +12,7 @@ public class LogCleanupOptions
     public const string Section = "LogCleanup";
     public int RetentionDays { get; set; } = 7;
     public int RunIntervalHours { get; set; } = 24;
+
 }
 
 public interface ILogCleanupService
@@ -26,13 +27,13 @@ public class LogCleanupService(AppDbContext dbContext, IOptions<LogCleanupOption
 
     public async Task<int> DeleteExpiredAsync(DateTime utcNow, CancellationToken cancellationToken = default)
     {
-        var retentionDays = Math.Max(1, _options.RetentionDays);
+        var retentionDays = Math.Max(0, _options.RetentionDays);
         var cutoff = utcNow.AddDays(-retentionDays);
 
         try
         {
             var deletedCount = await _dbContext.Database.ExecuteSqlRawAsync(
-                "DELETE FROM [audit].[Logs] WHERE [TimeStamp] < {0}", cutoff, cancellationToken);
+                "DELETE FROM [audit].[Logs] WHERE [TimeStamp] < {0}", [cutoff], cancellationToken);
 
             return deletedCount;
         }
