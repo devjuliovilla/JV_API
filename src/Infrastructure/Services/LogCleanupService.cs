@@ -29,7 +29,11 @@ public class LogCleanupService(AppDbContext dbContext, IOptions<LogCleanupOption
     {
         var retentionDays = Math.Max(0, _options.RetentionDays);
         var cutoff = utcNow.AddDays(-retentionDays);
+        return await ExecuteDeleteAsync(cutoff, cancellationToken);
+    }
 
+    protected virtual async Task<int> ExecuteDeleteAsync(DateTime cutoff, CancellationToken cancellationToken)
+    {
         try
         {
             var deletedCount = await _dbContext.Database.ExecuteSqlRawAsync(

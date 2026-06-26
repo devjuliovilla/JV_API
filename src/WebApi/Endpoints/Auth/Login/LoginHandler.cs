@@ -9,7 +9,7 @@ using Shared.Exceptions;
 
 namespace WebApi.Endpoints.Auth.Login;
 
-public class LoginHandler(AppDbContext db, IJwtService jwtService) : IRequestHandler<LoginCommand, LoginResponse>
+public class LoginHandler(AppDbContext db, IJwtService jwtService, ILogger<LoginHandler> logger) : IRequestHandler<LoginCommand, LoginResponse>
 {
     public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
@@ -39,6 +39,8 @@ public class LoginHandler(AppDbContext db, IJwtService jwtService) : IRequestHan
         };
         db.RefreshTokens.Add(refreshToken);
         await db.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("User {Username} (id: {UserId}) logged in successfully.", user.Username, user.Id);
 
         return new LoginResponse
         {

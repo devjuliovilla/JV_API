@@ -1,10 +1,11 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Domain.Common;
 
 namespace Infrastructure.Interceptors;
 
-public class AuditInterceptor : SaveChangesInterceptor
+public class AuditInterceptor(IHttpContextAccessor httpContextAccessor) : SaveChangesInterceptor
 {
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
@@ -18,11 +19,13 @@ public class AuditInterceptor : SaveChangesInterceptor
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
-    private static void ApplyAudit(DbContext? context)
+    private void ApplyAudit(DbContext? context)
     {
         if (context is null) return;
 
         var now = DateTime.UtcNow;
+        var userId = httpContextAccessor.HttpContext?.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "SYSTEM";
+
         var entries = context.ChangeTracker.Entries<EntityBase>();
 
         foreach (var entry in entries)
@@ -30,13 +33,13 @@ public class AuditInterceptor : SaveChangesInterceptor
             if (entry.State == EntityState.Added)
             {
                 entry.Entity.CreatedAt = now;
-                entry.Entity.CreatedBy = "system";
+                entry.Entity.CreatedBy = userId;
             }
 
             if (entry.State == EntityState.Modified)
             {
                 entry.Entity.UpdatedAt = now;
-                entry.Entity.UpdatedBy = "system";
+                entry.Entity.UpdatedBy = userId;
             }
         }
     }
