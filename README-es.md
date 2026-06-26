@@ -8,7 +8,7 @@ API empresarial base construida en .NET 10 con **Vertical Slice Architecture**, 
 - SQL Server + Entity Framework Core 10
 - MediatR + FluentValidation
 - Mapster
-- Serilog (consola + SQL Server)
+- Serilog (consola + sink SQL Server con auto-creación de tabla)
 - Sieve (filtros, ordenamiento, paginación)
 - JWT Bearer (autenticación propia, sin ASP.NET Identity)
 - MailKit (SMTP)
@@ -51,7 +51,7 @@ Sin Repository Pattern, sin Unit of Work, sin AutoMapper. Los Handlers usan `App
 | `sec` | `RefreshTokens` | Refresh tokens JWT |
 | `dbo` | `Products` | Productos (ejemplo) |
 | `cat` | `Categories` | Categorías (ejemplo) |
-| `log` | `Logs` | Logs de Serilog |
+| `audit` | `Logs` | Logs de Serilog |
 
 Todas las entidades heredan de `EntityBase` con auditoría automática (`CreatedAt`, `CreatedBy`, `UpdatedAt`, `UpdatedBy`) y **Soft Delete** (`Deleted`, `DeletedAt`, `DeletedBy`).
 
@@ -76,6 +76,12 @@ Todas las entidades heredan de `EntityBase` con auditoría automática (`Created
 | DELETE | `/{id}` | ✅ | Eliminar producto (soft delete) |
 | GET | `/{id}` | ❌ | Obtener producto |
 | GET | `/` | ❌ | Listar productos (paginado + filtros) |
+
+### Logs `/api/v1/logs`
+
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| POST | `/test` | ❌ | Insertar un log de prueba (para verificar logging en BD) |
 
 ### Health
 
@@ -180,7 +186,23 @@ Ambos usan "system" como `CreatedBy`/`UpdatedBy`/`DeletedBy`.
 
 ### Logging
 
-Serilog escribe a consola y a SQL Server (`log.Logs`). Limpieza automática de logs antiguos vía `LogCleanupBackgroundService` (retención configurable, por defecto 7 días).
+Serilog escribe a **consola** y a **SQL Server** (`[audit].[Logs]`) mediante `Serilog.Sinks.MSSqlServer`. La tabla se crea automáticamente al primer log.
+
+**Cómo funciona:** Cualquier `ILogger<T>` inyectado en handlers, middlewares o services fluye a través de Serilog. Cada request HTTP se loggea automáticamente con `UseSerilogRequestLogging()`. Las excepciones capturadas por `ExceptionHandlingMiddleware` también se persisten.
+
+**Uso en tu código:**
+```csharp
+public class MyHandler(ILogger<MyHandler> logger) : IRequestHandler<...>
+{
+    public async Task<...> Handle(..., CancellationToken ct)
+    {
+        logger.LogInformation("Procesando {Entity} con id {Id}", name, id);
+        logger.LogError(ex, "Error al procesar {Id}", id);
+    }
+}
+```
+
+**Limpieza de logs:** Automática mediante `LogCleanupBackgroundService` (retención configurable, 7 días por defecto). Elimina filas antiguas de `[audit].[Logs]` basándose en `TimeStamp`.
 
 ## Configuración
 

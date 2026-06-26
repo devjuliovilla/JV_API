@@ -28,16 +28,18 @@ public class LogCleanupService(AppDbContext dbContext, IOptions<LogCleanupOption
     {
         var retentionDays = Math.Max(1, _options.RetentionDays);
         var cutoff = utcNow.AddDays(-retentionDays);
-        var expiredLogs = await _dbContext.Logs
-            .Where(x => x.CreatedAt < cutoff)
-            .ToListAsync(cancellationToken);
 
-        if (expiredLogs.Count == 0)
+        try
+        {
+            var deletedCount = await _dbContext.Database.ExecuteSqlRawAsync(
+                "DELETE FROM [audit].[Logs] WHERE [TimeStamp] < {0}", cutoff, cancellationToken);
+
+            return deletedCount;
+        }
+        catch (Microsoft.Data.SqlClient.SqlException ex) when (ex.Number == 208)
+        {
             return 0;
-
-        _dbContext.Logs.RemoveRange(expiredLogs);
-        await _dbContext.SaveChangesAsync(cancellationToken);
-        return expiredLogs.Count;
+        }
     }
 }
 

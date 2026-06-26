@@ -8,7 +8,7 @@ Enterprise-grade base API built with .NET 10 using **Vertical Slice Architecture
 - SQL Server + Entity Framework Core 10
 - MediatR + FluentValidation
 - Mapster
-- Serilog (console + SQL Server)
+- Serilog (console + SQL Server sink with auto-create table)
 - Sieve (filtering, sorting, pagination)
 - JWT Bearer (custom auth, no ASP.NET Identity)
 - MailKit (SMTP)
@@ -51,7 +51,7 @@ No Repository Pattern, no Unit of Work, no AutoMapper. Handlers use `AppDbContex
 | `sec` | `RefreshTokens` | JWT refresh tokens |
 | `dbo` | `Products` | Products (example) |
 | `cat` | `Categories` | Categories (example) |
-| `log` | `Logs` | Serilog log entries |
+| `audit` | `Logs` | Serilog log entries |
 
 All entities inherit from `EntityBase` with automatic auditing (`CreatedAt`, `CreatedBy`, `UpdatedAt`, `UpdatedBy`) and **Soft Delete** (`Deleted`, `DeletedAt`, `DeletedBy`).
 
@@ -76,6 +76,12 @@ All entities inherit from `EntityBase` with automatic auditing (`CreatedAt`, `Cr
 | DELETE | `/{id}` | ✅ | Delete product (soft delete) |
 | GET | `/{id}` | ❌ | Get product |
 | GET | `/` | ❌ | List products (paginated + filters) |
+
+### Logs `/api/v1/logs`
+
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| POST | `/test` | ❌ | Insert a test log entry (for verifying DB logging) |
 
 ### Health
 
@@ -180,7 +186,23 @@ Both use "system" as `CreatedBy`/`UpdatedBy`/`DeletedBy`.
 
 ### Logging
 
-Serilog writes to console and SQL Server (`log.Logs`). Automatic log cleanup via `LogCleanupBackgroundService` (configurable retention, default 7 days).
+Serilog writes to **console** and **SQL Server** (`[audit].[Logs]`) via `Serilog.Sinks.MSSqlServer`. The table is auto-created on first write.
+
+**How it works:** Any `ILogger<T>` injected into handlers, middlewares, or services flows through Serilog. Every HTTP request is automatically logged by `UseSerilogRequestLogging()`. Exceptions caught by `ExceptionHandlingMiddleware` are also persisted.
+
+**Usage in your code:**
+```csharp
+public class MyHandler(ILogger<MyHandler> logger) : IRequestHandler<...>
+{
+    public async Task<...> Handle(..., CancellationToken ct)
+    {
+        logger.LogInformation("Processing {Entity} with id {Id}", name, id);
+        logger.LogError(ex, "Failed to process {Id}", id);
+    }
+}
+```
+
+**Log cleanup:** Automatic via `LogCleanupBackgroundService` (configurable retention, default 7 days). It deletes old rows from `[audit].[Logs]` based on `TimeStamp`.
 
 ## Configuration
 

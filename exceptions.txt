@@ -1,0 +1,23 @@
+Microsoft.Data.SqlClient.SqlException
+  HResult=0x80131904
+  Mensaje = El nombre de objeto 'sec.Roles' no es válido.
+  Origen = Core Microsoft SqlClient Data Provider
+  Seguimiento de la pila:
+   en Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__270_0(Task`1 result)
+   en System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   en System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- Fin del seguimiento de la pila de la ubicación anterior ---
+   en System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   en System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- Fin del seguimiento de la pila de la ubicación anterior ---
+   en Microsoft.EntityFrameworkCore.Storage.RelationalCommand.<ExecuteReaderAsync>d__22.MoveNext()
+   en Microsoft.EntityFrameworkCore.Storage.RelationalCommand.<ExecuteReaderAsync>d__22.MoveNext()
+   en Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.<InitializeReaderAsync>d__21.MoveNext()
+   en Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.<ExecuteAsync>d__7`2.MoveNext()
+   en Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.<MoveNextAsync>d__20.MoveNext()
+   en System.Runtime.CompilerServices.ConfiguredValueTaskAwaitable`1.ConfiguredValueTaskAwaiter.GetResult()
+   en Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.<SingleAsync>d__15`1.MoveNext()
+   en Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.<SingleAsync>d__15`1.MoveNext()
+   en Infrastructure.Seed.SeedData.<InitializeAsync>d__0.MoveNext() en C:\projects\personal\2026\jv-api\src\Infrastructure\Seed\SeedData.cs: línea 12
+   en WebApi.Extensions.WebApplicationExtensions.<InitializeDatabaseAsync>d__1.MoveNext() en C:\projects\personal\2026\jv-api\src\WebApi\Extensions\WebApplicationExtensions.cs: línea 38
+   en Program.<<Main>$>d__0.MoveNext() en C:\projects\personal\2026\jv-api\src\WebApi\Program.cs: línea 58

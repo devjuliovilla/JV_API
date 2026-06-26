@@ -1,15 +1,28 @@
 using WebApi.Extensions;
 using WebApi.Endpoints;
 using Infrastructure;
-using Infrastructure.Persistence;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Serilog;
+using Serilog.Sinks.MSSqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, config) =>
 {
     config.ReadFrom.Configuration(context.Configuration);
+
+    var connectionString = context.Configuration.GetConnectionString("DefaultConnection");
+    if (!string.IsNullOrEmpty(connectionString))
+    {
+        config.WriteTo.MSSqlServer(
+            connectionString: connectionString,
+            sinkOptions: new MSSqlServerSinkOptions
+            {
+                TableName = "Logs",
+                SchemaName = "audit",
+                AutoCreateSqlTable = true
+            });
+    }
 });
 
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -20,13 +33,15 @@ var app = builder.Build();
 app.ConfigurePipeline();
 
 app.MapGroup("/api/v1/auth").MapAuthEndpoints();
+app.MapGroup("/api/v1/logs").MapLogEndpoints();
 app.MapGroup("/api/v1/products").MapProductEndpoints();
 
-app.MapGet("/health", async (HealthCheckService healthCheck, AppDbContext db) =>
+app.MapGet("/health", async (HealthCheckService healthCheck, ILogger<Program> logger, CancellationToken cancellationToken) =>
 {
-    Log.Information("Health check requested");
+    var report = await healthCheck.CheckHealthAsync(cancellationToken);
+    var checkStatuses = report.Entries.ToDictionary(entry => entry.Key, entry => entry.Value.Status.ToString());
 
-    var report = await healthCheck.CheckHealthAsync();
+    logger.LogInformation("Health check requested. Status: {Status}", report.Status);
 
     return Results.Ok(new
     {
