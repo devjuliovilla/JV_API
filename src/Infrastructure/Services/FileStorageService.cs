@@ -1,19 +1,8 @@
+using Domain.Abstractions.Services;
+using Domain.Settings;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Services;
-
-public class FileStorageOptions
-{
-    public const string Section = "FileStorage";
-    public string LocalPath { get; set; } = "App_Data/Storage";
-}
-
-public interface IFileStorageService
-{
-    Task<string> SaveAsync(string fileName, Stream content, CancellationToken cancellationToken = default);
-    Task<Stream?> GetAsync(string path, CancellationToken cancellationToken = default);
-    Task DeleteAsync(string path, CancellationToken cancellationToken = default);
-}
 
 public class LocalFileStorageService(IOptions<FileStorageOptions> options) : IFileStorageService
 {

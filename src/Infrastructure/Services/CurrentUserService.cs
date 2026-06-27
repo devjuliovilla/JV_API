@@ -1,14 +1,7 @@
+using Domain.Abstractions.Services;
 using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Services;
-
-public interface ICurrentUserService
-{
-    long? UserId { get; }
-    string? Username { get; }
-    IEnumerable<string> Roles { get; }
-    bool IsAuthenticated { get; }
-}
 
 public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICurrentUserService
 {

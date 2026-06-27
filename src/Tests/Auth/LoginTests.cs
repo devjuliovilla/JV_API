@@ -3,6 +3,7 @@ using Xunit;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Infrastructure.Services;
+using Domain.Settings;
 using Microsoft.Extensions.Options;
 
 namespace Tests.Auth;

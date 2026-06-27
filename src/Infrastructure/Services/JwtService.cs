@@ -2,28 +2,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Domain.Abstractions.Services;
+using Domain.Entities;
+using Domain.Settings;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Domain.Entities;
 
 namespace Infrastructure.Services;
-
-public class JwtOptions
-{
-    public const string Section = "Jwt";
-    public string SecretKey { get; set; } = string.Empty;
-    public string Issuer { get; set; } = "WebApi";
-    public string Audience { get; set; } = "WebApi";
-    public int ExpirationMinutes { get; set; } = 60;
-    public int RefreshTokenExpirationDays { get; set; } = 1;
-}
-
-public interface IJwtService
-{
-    (string token, DateTime expiresAt) GenerateAccessToken(User user, IEnumerable<string> roles);
-    string GenerateRefreshToken();
-    ClaimsPrincipal? ValidateToken(string token);
-}
 
 public class JwtService(IOptions<JwtOptions> options) : IJwtService
 {

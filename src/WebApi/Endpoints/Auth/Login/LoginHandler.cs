@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MediatR;
 using Domain.Entities;
 using Infrastructure.Persistence;
-using Infrastructure.Services;
+using Domain.Abstractions.Services;
 using Shared.DTOs.Auth;
 using Shared.Exceptions;
 
