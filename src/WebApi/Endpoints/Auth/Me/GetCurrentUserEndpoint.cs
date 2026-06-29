@@ -1,3 +1,4 @@
+using Application.Features.Auth.Me;
 using MediatR;
 
 namespace WebApi.Endpoints.Auth.Me;

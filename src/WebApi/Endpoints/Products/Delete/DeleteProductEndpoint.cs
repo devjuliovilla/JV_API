@@ -1,3 +1,4 @@
+using Application.Features.Products.Delete;
 using MediatR;
 
 namespace WebApi.Endpoints.Products.Delete;

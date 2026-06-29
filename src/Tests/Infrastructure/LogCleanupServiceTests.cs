@@ -9,14 +9,17 @@ public class LogCleanupServiceTests
     [Fact]
     public async Task DeleteExpiredAsync_WithZeroRetention_DeletesAll()
     {
+        // Arrange
         var options = Options.Create(new LogCleanupOptions { RetentionDays = 0 });
         var now = new DateTime(2026, 6, 26, 12, 0, 0, DateTimeKind.Utc);
         DateTime? capturedCutoff = null;
 
         var service = new TestableLogCleanupService(options, cutoff => capturedCutoff = cutoff);
 
+        // Act
         var result = await service.DeleteExpiredAsync(now);
 
+        // Assert
         Assert.Equal(5, result);
         Assert.Equal(now, capturedCutoff);
     }
@@ -24,28 +27,34 @@ public class LogCleanupServiceTests
     [Fact]
     public async Task DeleteExpiredAsync_WithRetentionDays_CalculatesCorrectCutoff()
     {
+        // Arrange
         var options = Options.Create(new LogCleanupOptions { RetentionDays = 7 });
         var now = new DateTime(2026, 6, 26, 12, 0, 0, DateTimeKind.Utc);
         DateTime? capturedCutoff = null;
 
         var service = new TestableLogCleanupService(options, cutoff => capturedCutoff = cutoff);
 
+        // Act
         await service.DeleteExpiredAsync(now);
 
+        // Assert
         Assert.Equal(now.AddDays(-7), capturedCutoff);
     }
 
     [Fact]
     public async Task DeleteExpiredAsync_WithNegativeRetention_DefaultsToZero()
     {
+        // Arrange
         var options = Options.Create(new LogCleanupOptions { RetentionDays = -5 });
         var now = new DateTime(2026, 6, 26, 12, 0, 0, DateTimeKind.Utc);
         DateTime? capturedCutoff = null;
 
         var service = new TestableLogCleanupService(options, cutoff => capturedCutoff = cutoff);
 
+        // Act
         await service.DeleteExpiredAsync(now);
 
+        // Assert
         Assert.Equal(now, capturedCutoff);
     }
 

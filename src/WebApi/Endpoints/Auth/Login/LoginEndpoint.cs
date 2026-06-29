@@ -1,6 +1,6 @@
+using Application.Features.Auth.Login;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Shared.DTOs.Auth;
 
 namespace WebApi.Endpoints.Auth.Login;
 

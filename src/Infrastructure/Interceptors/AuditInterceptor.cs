@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Http;
+using Domain.Abstractions.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Domain.Common;
 
 namespace Infrastructure.Interceptors;
 
-public class AuditInterceptor(IHttpContextAccessor httpContextAccessor) : SaveChangesInterceptor
+public class AuditInterceptor(ICurrentUserService currentUserService) : SaveChangesInterceptor
 {
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
@@ -24,7 +24,7 @@ public class AuditInterceptor(IHttpContextAccessor httpContextAccessor) : SaveCh
         if (context is null) return;
 
         var now = DateTime.UtcNow;
-        var userId = httpContextAccessor.HttpContext?.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "SYSTEM";
+        var userId = currentUserService.UserId?.ToString() ?? currentUserService.Username ?? "SYSTEM";
 
         var entries = context.ChangeTracker.Entries<EntityBase>();
 

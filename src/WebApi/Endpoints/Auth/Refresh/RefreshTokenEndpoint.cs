@@ -1,5 +1,5 @@
+using Application.Features.Auth.Refresh;
 using MediatR;
-using Shared.DTOs.Auth;
 
 namespace WebApi.Endpoints.Auth.Refresh;
 

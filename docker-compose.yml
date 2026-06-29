@@ -2,14 +2,14 @@ services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
-      SA_PASSWORD: "YourStr0ngP@ssword!"
+      SA_PASSWORD: "${SQLSERVER_SA_PASSWORD}"
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
     volumes:
       - sqlserver_data:/var/opt/mssql
     healthcheck:
-      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ngP@ssword!" -C -Q "SELECT 1" || exit 1
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "${SQLSERVER_SA_PASSWORD}" -C -Q "SELECT 1" || exit 1
       interval: 10s
       timeout: 5s
       retries: 5
@@ -21,7 +21,13 @@ services:
     ports:
       - "8080:8080"
     environment:
-      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=WebApi;User Id=sa;Password=YourStr0ngP@ssword!;TrustServerCertificate=True;MultipleActiveResultSets=True"
+      ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=${DB_NAME};User Id=sa;Password=${SQLSERVER_SA_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=True"
+      Database__ApplyMigrations: "${DATABASE_APPLY_MIGRATIONS}"
+      Database__SeedOnStartup: "${DATABASE_SEED_ON_STARTUP}"
+      Jwt__SecretKey: "${JWT_SECRET_KEY}"
+      Jwt__Issuer: "${JWT_ISSUER}"
+      Jwt__Audience: "${JWT_AUDIENCE}"
     depends_on:
       sqlserver:
         condition: service_healthy

@@ -1,5 +1,5 @@
+using Application.Features.Products.Update;
 using MediatR;
-using Shared.DTOs.Products;
 
 namespace WebApi.Endpoints.Products.Update;
 

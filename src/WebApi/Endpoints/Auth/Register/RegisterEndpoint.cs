@@ -1,5 +1,5 @@
+using Application.Features.Auth.Register;
 using MediatR;
-using Shared.DTOs.Auth;
 
 namespace WebApi.Endpoints.Auth.Register;
 

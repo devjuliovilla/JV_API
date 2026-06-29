@@ -1,5 +1,5 @@
+using Application.Features.Products.Create;
 using MediatR;
-using Shared.DTOs.Products;
 
 namespace WebApi.Endpoints.Products.Create;
 

@@ -1,6 +1,6 @@
+using Application.Features.Products.List;
+using Application.Features.Products.Common;
 using MediatR;
-using Shared.DTOs;
-using Shared.DTOs.Products;
 
 namespace WebApi.Endpoints.Products.List;
 

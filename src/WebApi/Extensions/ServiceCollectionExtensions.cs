@@ -1,11 +1,11 @@
+using Application.Abstractions.Persistence;
+using Application.Behaviors;
 using FluentValidation;
-using Shared.Behaviors;
-using Shared.DTOs;
-using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi;
 using System.Threading.RateLimiting;
+using WebApi.Configuration;
 
 namespace WebApi.Extensions;
 
@@ -15,11 +15,11 @@ public static class ServiceCollectionExtensions
     {
         services.AddMediatR(cfg =>
         {
-            cfg.RegisterServicesFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
+            cfg.RegisterServicesFromAssembly(typeof(IAppDbContext).Assembly);
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
 
-        services.AddValidatorsFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
+        services.AddValidatorsFromAssembly(typeof(IAppDbContext).Assembly);
 
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
@@ -48,10 +48,6 @@ public static class ServiceCollectionExtensions
                 options.IncludeXmlComments(xmlPath);
             }
         });
-
-        services.AddHealthChecks()
-            .AddDbContextCheck<AppDbContext>("database");
-
         var rateLimitSection = configuration.GetSection("RateLimiting");
         var permitLimit = rateLimitSection.GetValue<int>("PermitLimit", 100);
         var windowSeconds = rateLimitSection.GetValue<int>("WindowSeconds", 60);
@@ -68,21 +64,20 @@ public static class ServiceCollectionExtensions
             });
         });
 
-        var corsSection = configuration.GetSection("Cors:AllowedOrigins");
-        var allowedOrigins = corsSection.Get<string[]>() ?? [];
-        if (allowedOrigins.Length != 0)
+        var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+        services.AddCors(options =>
         {
-            services.AddCors(options =>
+            options.AddDefaultPolicy(policy =>
             {
-                options.AddDefaultPolicy(policy =>
+                if (allowedOrigins.Length != 0)
                 {
                     policy.WithOrigins(allowedOrigins)
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials();
-                });
+                }
             });
-        }
+        });
 
         return services;
     }

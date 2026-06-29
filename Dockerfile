@@ -3,7 +3,7 @@ WORKDIR /src
 
 COPY WebApi.slnx ./
 COPY src/Domain/Domain.csproj src/Domain/
-COPY src/Shared/Shared.csproj src/Shared/
+COPY src/Application/Application.csproj src/Application/
 COPY src/Infrastructure/Infrastructure.csproj src/Infrastructure/
 COPY src/WebApi/WebApi.csproj src/WebApi/
 COPY src/Tests/Tests.csproj src/Tests/

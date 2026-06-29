@@ -1,7 +1,7 @@
+using Application.Common;
+using Application.Exceptions;
 using System.Net;
 using System.Text.Json;
-using Shared.DTOs;
-using Shared.Exceptions;
 
 namespace WebApi.Middleware;
 
@@ -24,12 +24,18 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
     {
         var response = exception switch
         {
-            Shared.Exceptions.ValidationException validationEx => new ApiErrorResponseDto
+            ValidationException validationEx => new ApiErrorResponseDto
             {
                 Title = "Validation Error",
                 Status = (int)HttpStatusCode.BadRequest,
                 Detail = validationEx.Message,
                 Errors = validationEx.Errors
+            },
+            ConflictException => new ApiErrorResponseDto
+            {
+                Title = "Conflict",
+                Status = (int)HttpStatusCode.Conflict,
+                Detail = exception.Message
             },
             NotFoundException => new ApiErrorResponseDto
             {

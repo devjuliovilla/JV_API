@@ -1,0 +1,9 @@
+namespace Application.Features.Products.Update;
+
+public class UpdateProductRequest
+{
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public decimal Price { get; set; }
+    public long CategoryId { get; set; }
+}

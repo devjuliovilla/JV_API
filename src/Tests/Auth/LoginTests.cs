@@ -13,6 +13,7 @@ public class LoginTests : TestBase
     [Fact]
     public async Task Login_ValidCredentials_ReturnsToken()
     {
+        // Arrange
         using var context = CreateDbContext();
         await SeedData(context);
 
@@ -33,8 +34,11 @@ public class LoginTests : TestBase
         var jwtService = new JwtService(jwtOptions);
 
         var roles = new[] { "Admin" };
+
+        // Act
         var (token, expiresAt) = jwtService.GenerateAccessToken(user, roles);
 
+        // Assert
         Assert.False(string.IsNullOrEmpty(token));
         Assert.True(expiresAt > DateTime.UtcNow);
     }
@@ -42,6 +46,7 @@ public class LoginTests : TestBase
     [Fact]
     public async Task Login_InvalidPassword_ReturnsNull()
     {
+        // Arrange
         using var context = CreateDbContext();
         await SeedData(context);
 
@@ -52,8 +57,10 @@ public class LoginTests : TestBase
         user.PasswordHash = hasher.HashPassword(user, "Test123!");
         await context.SaveChangesAsync();
 
+        // Act
         var result = hasher.VerifyHashedPassword(user, user.PasswordHash, "WrongPassword");
 
+        // Assert
         Assert.Equal(PasswordVerificationResult.Failed, result);
     }
 }
