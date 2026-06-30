@@ -1,0 +1,856 @@
+{
+  "communities": {
+    "0": [
+      "auth_logintests",
+      "auth_logintests_logintests_login_invalidpassword_returnsnull",
+      "auth_logintests_logintests_login_validcredentials_returnstoken",
+      "auth_refreshtokenhandlertests_refreshtokenhandlertests_handle_withactivetoken_rotatesrefreshtoken",
+      "auth_refreshtokenhandlertests_refreshtokenhandlertests_handle_withmissingtoken_throwsunauthorizedexception",
+      "auth_refreshtokenhandlertests_refreshtokenhandlertests_handle_withrevokedtoken_throwsunauthorizedexception",
+      "auth_registerhandlertests",
+      "auth_registerhandlertests_registerhandlertests_handle_withduplicateemail_throwsconflictexception",
+      "auth_registerhandlertests_registerhandlertests_handle_withduplicateusername_throwsconflictexception",
+      "auth_registerhandlertests_registerhandlertests_handle_withoutdefaultuserrole_throwsinvalidoperationexception",
+      "auth_registerhandlertests_registerhandlertests_handle_withvalidcommand_createsuserwithdefaultrole",
+      "products_deleteproducthandlertests",
+      "products_deleteproducthandlertests_deleteproducthandlertests_handle_withexistingproduct_removesproduct",
+      "products_deleteproducthandlertests_deleteproducthandlertests_handle_withmissingproduct_throwsnotfoundexception",
+      "products_getproductstests",
+      "products_getproductstests_getproductstests_getproducts_returnsallproducts",
+      "products_getproductstests_getproductstests_getproducts_shouldrespectsoftdelete",
+      "refresh_refreshtokenhandler",
+      "refresh_refreshtokenhandler_refreshtokenhandler_handle",
+      "refresh_refreshtokenresponse_refreshtokenresponse",
+      "refreshtokencommand",
+      "refreshtokenresponse",
+      "src_application_features_auth_refresh_refreshtokenhandler_cs_cancellationtoken",
+      "src_application_features_auth_refresh_refreshtokenhandler_cs_task",
+      "src_tests_auth_logintests_cs_fact",
+      "src_tests_auth_logintests_cs_task",
+      "src_tests_auth_refreshtokenhandlertests_cs_fact",
+      "src_tests_auth_refreshtokenhandlertests_cs_task",
+      "src_tests_auth_registerhandlertests_cs_fact",
+      "src_tests_auth_registerhandlertests_cs_task",
+      "src_tests_products_createproducthandlertests_cs_fact",
+      "src_tests_products_createproducthandlertests_cs_task",
+      "src_tests_products_deleteproducthandlertests_cs_fact",
+      "src_tests_products_deleteproducthandlertests_cs_task",
+      "src_tests_products_getproductstests_cs_fact",
+      "src_tests_products_getproductstests_cs_task",
+      "src_tests_testbase_cs_appdbcontext",
+      "src_tests_testbase_cs_task",
+      "tests_testbase_testbase",
+      "tests_testbase_testbase_createdbcontext",
+      "tests_testbase_testbase_seeddata"
+    ],
+    "1": [
+      "webapi_appsettings",
+      "webapi_appsettings_allowedhosts",
+      "webapi_appsettings_connectionstrings",
+      "webapi_appsettings_connectionstrings_defaultconnection",
+      "webapi_appsettings_cors",
+      "webapi_appsettings_cors_allowedorigins",
+      "webapi_appsettings_database",
+      "webapi_appsettings_database_applymigrations",
+      "webapi_appsettings_database_seedonstartup",
+      "webapi_appsettings_filestorage",
+      "webapi_appsettings_filestorage_localpath",
+      "webapi_appsettings_jwt",
+      "webapi_appsettings_jwt_audience",
+      "webapi_appsettings_jwt_expirationminutes",
+      "webapi_appsettings_jwt_issuer",
+      "webapi_appsettings_jwt_refreshtokenexpirationdays",
+      "webapi_appsettings_jwt_secretkey",
+      "webapi_appsettings_logcleanup",
+      "webapi_appsettings_logcleanup_retentiondays",
+      "webapi_appsettings_logcleanup_runintervalhours",
+      "webapi_appsettings_minimumlevel_default",
+      "webapi_appsettings_ratelimiting",
+      "webapi_appsettings_ratelimiting_permitlimit",
+      "webapi_appsettings_ratelimiting_windowseconds",
+      "webapi_appsettings_serilog",
+      "webapi_appsettings_serilog_enrich",
+      "webapi_appsettings_serilog_minimumlevel",
+      "webapi_appsettings_serilog_using",
+      "webapi_appsettings_serilog_writeto",
+      "webapi_appsettings_sieve",
+      "webapi_appsettings_sieve_defaultpagesize",
+      "webapi_appsettings_sieve_maxpagesize",
+      "webapi_appsettings_smtp",
+      "webapi_appsettings_smtp_enablessl",
+      "webapi_appsettings_smtp_from",
+      "webapi_appsettings_smtp_fromname",
+      "webapi_appsettings_smtp_host",
+      "webapi_appsettings_smtp_password",
+      "webapi_appsettings_smtp_port",
+      "webapi_appsettings_smtp_username"
+    ],
+    "2": [
+      "application_application",
+      "domain_domain",
+      "infrastructure_infrastructure",
+      "nuget_coverlet_collector",
+      "nuget_fluentvalidation",
+      "nuget_fluentvalidation_dependencyinjectionextensions",
+      "nuget_mailkit",
+      "nuget_microsoft_aspnetcore_authentication_jwtbearer",
+      "nuget_microsoft_entityframeworkcore",
+      "nuget_microsoft_entityframeworkcore_sqlserver",
+      "nuget_microsoft_extensions_diagnostics_healthchecks_entityframeworkcore",
+      "nuget_microsoft_extensions_identity_core",
+      "nuget_microsoft_extensions_logging_abstractions",
+      "nuget_microsoft_net_test_sdk",
+      "nuget_microsoft_openapi",
+      "nuget_serilog_aspnetcore",
+      "nuget_serilog_sinks_mssqlserver",
+      "nuget_swashbuckle_aspnetcore",
+      "nuget_xunit",
+      "nuget_xunit_runner_visualstudio",
+      "sdk_microsoft_net_sdk_web",
+      "src_application_application_csproj_framework_net10_0",
+      "src_application_application_csproj_nuget_mapster",
+      "src_application_application_csproj_nuget_mediatr",
+      "src_application_application_csproj_nuget_sieve",
+      "src_domain_domain_csproj_framework_net10_0",
+      "src_infrastructure_infrastructure_csproj_framework_net10_0",
+      "src_infrastructure_infrastructure_csproj_nuget_mapster",
+      "src_infrastructure_infrastructure_csproj_nuget_sieve",
+      "src_infrastructure_infrastructure_csproj_sdk_microsoft_net_sdk",
+      "src_tests_tests_csproj_framework_net10_0",
+      "src_tests_tests_csproj_sdk_microsoft_net_sdk",
+      "src_webapi_webapi_csproj_framework_net10_0",
+      "src_webapi_webapi_csproj_nuget_mediatr",
+      "tests_tests",
+      "webapi_appsettings_minimumlevel_override",
+      "webapi_appsettings_override_microsoft",
+      "webapi_appsettings_override_microsoft_aspnetcore",
+      "webapi_webapi"
+    ],
+    "3": [
+      "ihttpcontextaccessor",
+      "interceptors_auditinterceptor_auditinterceptor_applyaudit",
+      "interceptors_auditinterceptor_auditinterceptor_savingchanges",
+      "interceptors_auditinterceptor_auditinterceptor_savingchangesasync",
+      "interceptors_softdeleteinterceptor_softdeleteinterceptor_applysoftdelete",
+      "interceptors_softdeleteinterceptor_softdeleteinterceptor_savingchanges",
+      "interceptors_softdeleteinterceptor_softdeleteinterceptor_savingchangesasync",
+      "readme_auditinterceptor",
+      "readme_icurrentuserservice",
+      "readme_softdeleteinterceptor",
+      "savechangesinterceptor",
+      "src_infrastructure_interceptors_auditinterceptor_cs_cancellationtoken",
+      "src_infrastructure_interceptors_auditinterceptor_cs_dbcontext",
+      "src_infrastructure_interceptors_auditinterceptor_cs_dbcontexteventdata",
+      "src_infrastructure_interceptors_auditinterceptor_cs_interceptionresult",
+      "src_infrastructure_interceptors_auditinterceptor_cs_valuetask",
+      "src_infrastructure_interceptors_softdeleteinterceptor_cs_cancellationtoken",
+      "src_infrastructure_interceptors_softdeleteinterceptor_cs_dbcontext",
+      "src_infrastructure_interceptors_softdeleteinterceptor_cs_dbcontexteventdata",
+      "src_infrastructure_interceptors_softdeleteinterceptor_cs_interceptionresult",
+      "src_infrastructure_interceptors_softdeleteinterceptor_cs_valuetask",
+      "src_tests_testbase_cs_claimsprincipal",
+      "src_tests_testbase_cs_datetime",
+      "src_tests_testbase_cs_expiresat",
+      "src_tests_testbase_cs_ienumerable",
+      "src_tests_testbase_cs_token",
+      "src_tests_testbase_cs_user",
+      "tests_testbase",
+      "tests_testbase_fakecurrentuserservice",
+      "tests_testbase_fakejwtservice",
+      "tests_testbase_fakejwtservice_generateaccesstoken",
+      "tests_testbase_fakejwtservice_generaterefreshtoken",
+      "tests_testbase_fakejwtservice_validatetoken"
+    ],
+    "4": [
+      "abstractvalidator",
+      "create_createproductcommand",
+      "create_createproducthandler",
+      "create_createproducthandler_createproducthandler_handle",
+      "create_createproductrequest",
+      "create_createproductresponse_createproductresponse",
+      "create_createproductvalidator",
+      "createproductresponse",
+      "delete_deleteproducthandler",
+      "delete_deleteproducthandler_deleteproducthandler_handle",
+      "deleteproductcommand",
+      "irequesthandler",
+      "products_createproducttests",
+      "products_createproducttests_createproducttests_createproduct_savestodatabase",
+      "readme_createproductcommand",
+      "readme_createproductresponse",
+      "register_registercommand",
+      "register_registerhandler",
+      "register_registerhandler_registerhandler_handle",
+      "register_registerresponse_registerresponse",
+      "register_registervalidator",
+      "registerresponse",
+      "src_application_features_auth_register_registerhandler_cs_cancellationtoken",
+      "src_application_features_auth_register_registerhandler_cs_task",
+      "src_application_features_products_create_createproducthandler_cs_cancellationtoken",
+      "src_application_features_products_create_createproducthandler_cs_task",
+      "src_application_features_products_delete_deleteproducthandler_cs_cancellationtoken",
+      "src_application_features_products_delete_deleteproducthandler_cs_task",
+      "src_application_features_products_delete_deleteproducthandler_cs_unit",
+      "src_tests_products_createproducttests_cs_fact",
+      "src_tests_products_createproducttests_cs_task",
+      "update_updateproductvalidator"
+    ],
+    "5": [
+      "category",
+      "configurations_categoryconfiguration",
+      "configurations_categoryconfiguration_categoryconfiguration_configure",
+      "configurations_productconfiguration",
+      "configurations_productconfiguration_productconfiguration_configure",
+      "configurations_refreshtokenconfiguration",
+      "configurations_refreshtokenconfiguration_refreshtokenconfiguration_configure",
+      "configurations_roleconfiguration",
+      "configurations_roleconfiguration_roleconfiguration_configure",
+      "configurations_userconfiguration",
+      "configurations_userconfiguration_userconfiguration_configure",
+      "configurations_userroleconfiguration",
+      "configurations_userroleconfiguration_userroleconfiguration_configure",
+      "ientitytypeconfiguration",
+      "product",
+      "refreshtoken",
+      "role",
+      "src_infrastructure_persistence_configurations_categoryconfiguration_cs_entitytypebuilder",
+      "src_infrastructure_persistence_configurations_productconfiguration_cs_entitytypebuilder",
+      "src_infrastructure_persistence_configurations_refreshtokenconfiguration_cs_entitytypebuilder",
+      "src_infrastructure_persistence_configurations_roleconfiguration_cs_entitytypebuilder",
+      "src_infrastructure_persistence_configurations_userconfiguration_cs_entitytypebuilder",
+      "src_infrastructure_persistence_configurations_userconfiguration_cs_user",
+      "src_infrastructure_persistence_configurations_userroleconfiguration_cs_entitytypebuilder",
+      "userrole"
+    ],
+    "6": [
+      "action",
+      "infrastructure_logcleanupservicetests_logcleanupservicetests_deleteexpiredasync_withnegativeretention_defaultstozero",
+      "infrastructure_logcleanupservicetests_logcleanupservicetests_deleteexpiredasync_withretentiondays_calculatescorrectcutoff",
+      "infrastructure_logcleanupservicetests_logcleanupservicetests_deleteexpiredasync_withzeroretention_deletesall",
+      "infrastructure_logcleanupservicetests_testablelogcleanupservice",
+      "infrastructure_logcleanupservicetests_testablelogcleanupservice_executedeleteasync",
+      "readme_ilogcleanupservice",
+      "services_ilogcleanupservice_ilogcleanupservice_deleteexpiredasync",
+      "services_logcleanupservice_logcleanupservice_deleteexpiredasync",
+      "services_logcleanupservice_logcleanupservice_executedeleteasync",
+      "src_domain_abstractions_services_ilogcleanupservice_cs_cancellationtoken",
+      "src_domain_abstractions_services_ilogcleanupservice_cs_datetime",
+      "src_domain_abstractions_services_ilogcleanupservice_cs_task",
+      "src_infrastructure_services_logcleanupservice_cs_appdbcontext",
+      "src_infrastructure_services_logcleanupservice_cs_cancellationtoken",
+      "src_infrastructure_services_logcleanupservice_cs_datetime",
+      "src_infrastructure_services_logcleanupservice_cs_logcleanupoptions",
+      "src_infrastructure_services_logcleanupservice_cs_task",
+      "src_tests_infrastructure_logcleanupservicetests_cs_cancellationtoken",
+      "src_tests_infrastructure_logcleanupservicetests_cs_datetime",
+      "src_tests_infrastructure_logcleanupservicetests_cs_fact",
+      "src_tests_infrastructure_logcleanupservicetests_cs_task"
+    ],
+    "7": [
+      "jwtoptions",
+      "readme_ijwtservice",
+      "readme_jwt_bearer_authentication",
+      "services_ijwtservice_ijwtservice_generateaccesstoken",
+      "services_ijwtservice_ijwtservice_generaterefreshtoken",
+      "services_ijwtservice_ijwtservice_validatetoken",
+      "services_jwtservice_jwtservice_generateaccesstoken",
+      "services_jwtservice_jwtservice_generaterefreshtoken",
+      "services_jwtservice_jwtservice_validatetoken",
+      "src_domain_abstractions_services_ijwtservice_cs_claimsprincipal",
+      "src_domain_abstractions_services_ijwtservice_cs_datetime",
+      "src_domain_abstractions_services_ijwtservice_cs_expiresat",
+      "src_domain_abstractions_services_ijwtservice_cs_ienumerable",
+      "src_domain_abstractions_services_ijwtservice_cs_token",
+      "src_domain_abstractions_services_ijwtservice_cs_user",
+      "src_domain_settings_jwtoptions_cs_string",
+      "src_infrastructure_services_jwtservice_cs_claimsprincipal",
+      "src_infrastructure_services_jwtservice_cs_datetime",
+      "src_infrastructure_services_jwtservice_cs_expiresat",
+      "src_infrastructure_services_jwtservice_cs_ienumerable",
+      "src_infrastructure_services_jwtservice_cs_token",
+      "src_infrastructure_services_jwtservice_cs_user"
+    ],
+    "8": [
+      "webapi_appsettings_development",
+      "webapi_appsettings_development_connectionstrings",
+      "webapi_appsettings_development_connectionstrings_defaultconnection",
+      "webapi_appsettings_development_cors",
+      "webapi_appsettings_development_cors_allowedorigins",
+      "webapi_appsettings_development_jwt",
+      "webapi_appsettings_development_jwt_audience",
+      "webapi_appsettings_development_jwt_issuer",
+      "webapi_appsettings_development_jwt_secretkey",
+      "webapi_appsettings_development_logcleanup",
+      "webapi_appsettings_development_logcleanup_retentiondays",
+      "webapi_appsettings_development_logcleanup_runintervalhours",
+      "webapi_appsettings_development_minimumlevel_default",
+      "webapi_appsettings_development_minimumlevel_override",
+      "webapi_appsettings_development_override_microsoft",
+      "webapi_appsettings_development_override_microsoft_aspnetcore",
+      "webapi_appsettings_development_ratelimiting",
+      "webapi_appsettings_development_ratelimiting_permitlimit",
+      "webapi_appsettings_development_ratelimiting_windowseconds",
+      "webapi_appsettings_development_serilog",
+      "webapi_appsettings_development_serilog_minimumlevel",
+      "webapi_appsettings_development_serilog_writeto"
+    ],
+    "9": [
+      "exceptions_conflictexception",
+      "exceptions_forbiddenexception",
+      "exceptions_notfoundexception",
+      "exceptions_unauthorizedexception",
+      "exceptions_validationexception",
+      "httpcontext",
+      "middleware_exceptionhandlingmiddleware_exceptionhandlingmiddleware_handleexceptionasync",
+      "middleware_exceptionhandlingmiddleware_exceptionhandlingmiddleware_invokeasync",
+      "readme_application",
+      "readme_domain",
+      "readme_exceptionhandlingmiddleware",
+      "readme_infrastructure",
+      "readme_passwordhasher_user",
+      "readme_webapi",
+      "src_webapi_middleware_exceptionhandlingmiddleware_cs_exception",
+      "src_webapi_middleware_exceptionhandlingmiddleware_cs_task"
+    ],
+    "10": [
+      "filestorageoptions",
+      "readme_ifilestorageservice",
+      "services_filestorageservice_localfilestorageservice",
+      "services_filestorageservice_localfilestorageservice_deleteasync",
+      "services_filestorageservice_localfilestorageservice_getasync",
+      "services_filestorageservice_localfilestorageservice_saveasync",
+      "services_ifilestorageservice_ifilestorageservice_deleteasync",
+      "services_ifilestorageservice_ifilestorageservice_getasync",
+      "services_ifilestorageservice_ifilestorageservice_saveasync",
+      "src_domain_abstractions_services_ifilestorageservice_cs_cancellationtoken",
+      "src_domain_abstractions_services_ifilestorageservice_cs_stream",
+      "src_domain_abstractions_services_ifilestorageservice_cs_task",
+      "src_domain_settings_filestorageoptions_cs_string",
+      "src_infrastructure_services_filestorageservice_cs_cancellationtoken",
+      "src_infrastructure_services_filestorageservice_cs_stream",
+      "src_infrastructure_services_filestorageservice_cs_task"
+    ],
+    "11": [
+      "auth_loginhandlertests",
+      "auth_loginhandlertests_loginhandlertests_handle_withinactiveuser_throwsunauthorizedexception",
+      "auth_loginhandlertests_loginhandlertests_handle_withinvalidpassword_throwsunauthorizedexception",
+      "auth_loginhandlertests_loginhandlertests_handle_withvalidcredentials_returnstokens",
+      "login_logincommand",
+      "login_loginhandler",
+      "login_loginhandler_loginhandler_handle",
+      "login_loginresponse_loginresponse",
+      "login_loginvalidator",
+      "login_loginvalidator_loginvalidator",
+      "loginresponse",
+      "src_application_features_auth_login_loginhandler_cs_cancellationtoken",
+      "src_application_features_auth_login_loginhandler_cs_task",
+      "src_tests_auth_loginhandlertests_cs_fact",
+      "src_tests_auth_loginhandlertests_cs_task"
+    ],
+    "12": [
+      "common_productresponse",
+      "get_getproducthandler",
+      "get_getproducthandler_getproducthandler_handle",
+      "getproductquery",
+      "list_getproductshandler_getproductshandler_handle",
+      "pagedresponsedto",
+      "products_getproducthandlertests_getproducthandlertests_handle_withexistingproduct_returnsproduct",
+      "products_getproducthandlertests_getproducthandlertests_handle_withmissingproduct_throwsnotfoundexception",
+      "src_application_features_products_get_getproducthandler_cs_cancellationtoken",
+      "src_application_features_products_get_getproducthandler_cs_task",
+      "src_application_features_products_list_getproductshandler_cs_cancellationtoken",
+      "src_application_features_products_list_getproductshandler_cs_productresponse",
+      "src_application_features_products_list_getproductshandler_cs_task",
+      "src_tests_products_getproducthandlertests_cs_fact",
+      "src_tests_products_getproducthandlertests_cs_task"
+    ],
+    "13": [
+      "common_entitybase",
+      "entities_category",
+      "entities_category_category",
+      "entities_product",
+      "entities_product_product",
+      "entities_refreshtoken",
+      "entities_refreshtoken_refreshtoken",
+      "entities_role",
+      "entities_role_role",
+      "entities_user",
+      "entities_user_user",
+      "entities_userrole",
+      "entities_userrole_userrole"
+    ],
+    "14": [
+      "application_validationbehaviortests_validationbehaviortests_handle_withinvalidcommand_throwsvalidationexception",
+      "application_validationbehaviortests_validationbehaviortests_handle_withvalidcommand_callsnext",
+      "behaviors_validationbehavior",
+      "behaviors_validationbehavior_validationbehavior_handle",
+      "ipipelinebehavior",
+      "requesthandlerdelegate",
+      "src_application_behaviors_validationbehavior_cs_cancellationtoken",
+      "src_application_behaviors_validationbehavior_cs_task",
+      "src_tests_application_validationbehaviortests_cs_fact",
+      "src_tests_application_validationbehaviortests_cs_task",
+      "trequest",
+      "tresponse"
+    ],
+    "15": [
+      "dbcontext",
+      "persistence_appdbcontext_appdbcontext_onmodelcreating",
+      "persistence_iappdbcontext_iappdbcontext_savechangesasync",
+      "readme_appdbcontext",
+      "seed_seeddata",
+      "seed_seeddata_seeddata",
+      "seed_seeddata_seeddata_initializeasync",
+      "src_application_abstractions_persistence_iappdbcontext_cs_cancellationtoken",
+      "src_application_abstractions_persistence_iappdbcontext_cs_task",
+      "src_infrastructure_persistence_appdbcontext_cs_modelbuilder",
+      "src_infrastructure_seed_seeddata_cs_cancellationtoken",
+      "src_infrastructure_seed_seeddata_cs_task"
+    ],
+    "16": [
+      "auth_getcurrentuserhandlertests_getcurrentuserhandlertests_handle_withauthenticateduser_returnscurrentuser",
+      "auth_getcurrentuserhandlertests_getcurrentuserhandlertests_handle_withmissinguser_throwsnotfoundexception",
+      "auth_getcurrentuserhandlertests_getcurrentuserhandlertests_handle_withoutauthenticateduser_throwsunauthorizedexception",
+      "currentuserresponse",
+      "getcurrentuserquery",
+      "me_getcurrentuserhandler",
+      "me_getcurrentuserhandler_getcurrentuserhandler_handle",
+      "src_application_features_auth_me_getcurrentuserhandler_cs_cancellationtoken",
+      "src_application_features_auth_me_getcurrentuserhandler_cs_task",
+      "src_tests_auth_getcurrentuserhandlertests_cs_fact",
+      "src_tests_auth_getcurrentuserhandlertests_cs_task"
+    ],
+    "17": [
+      "migration",
+      "migrationbuilder",
+      "migrations_20260626192028_initialcreate",
+      "migrations_20260626192028_initialcreate_designer_infrastructure_migrations",
+      "migrations_20260626192028_initialcreate_designer_initialcreate",
+      "migrations_20260626192028_initialcreate_designer_initialcreate_buildtargetmodel",
+      "migrations_20260626192028_initialcreate_infrastructure_migrations",
+      "migrations_20260626192028_initialcreate_initialcreate",
+      "migrations_20260626192028_initialcreate_initialcreate_down",
+      "migrations_20260626192028_initialcreate_initialcreate_up",
+      "src_infrastructure_migrations_20260626192028_initialcreate_designer_cs_modelbuilder"
+    ],
+    "18": [
+      "properties_launchsettings",
+      "properties_launchsettings_environmentvariables_aspnetcore_environment",
+      "properties_launchsettings_http_applicationurl",
+      "properties_launchsettings_http_commandname",
+      "properties_launchsettings_http_dotnetrunmessages",
+      "properties_launchsettings_http_environmentvariables",
+      "properties_launchsettings_http_launchbrowser",
+      "properties_launchsettings_profiles",
+      "properties_launchsettings_profiles_http",
+      "properties_launchsettings_profiles_https",
+      "properties_launchsettings_schema"
+    ],
+    "19": [
+      "readme_iemailservice",
+      "readme_mailkit",
+      "services_emailservice",
+      "services_emailservice_emailservice_sendasync",
+      "services_iemailservice_iemailservice_sendasync",
+      "smtpoptions",
+      "src_domain_abstractions_services_iemailservice_cs_cancellationtoken",
+      "src_domain_abstractions_services_iemailservice_cs_task",
+      "src_domain_settings_smtpoptions_cs_string",
+      "src_infrastructure_services_emailservice_cs_cancellationtoken",
+      "src_infrastructure_services_emailservice_cs_task"
+    ],
+    "20": [
+      "auth_revoketokenhandlertests_revoketokenhandlertests_handle_withexistingtoken_revokestoken",
+      "auth_revoketokenhandlertests_revoketokenhandlertests_handle_withmissingtoken_throwsnotfoundexception",
+      "revoke_revoketokenhandler",
+      "revoke_revoketokenhandler_revoketokenhandler_handle",
+      "revoketokencommand",
+      "src_application_features_auth_revoke_revoketokenhandler_cs_cancellationtoken",
+      "src_application_features_auth_revoke_revoketokenhandler_cs_task",
+      "src_application_features_auth_revoke_revoketokenhandler_cs_unit",
+      "src_tests_auth_revoketokenhandlertests_cs_fact",
+      "src_tests_auth_revoketokenhandlertests_cs_task"
+    ],
+    "21": [
+      "backgroundservice",
+      "ilogger",
+      "iservicescopefactory",
+      "services_logcleanupbackgroundservice",
+      "services_logcleanupbackgroundservice_logcleanupbackgroundservice_executeasync",
+      "services_logcleanupbackgroundservice_logcleanupbackgroundservice_runcleanupasync",
+      "settings_logcleanupoptions",
+      "src_domain_settings_logcleanupoptions_cs_string",
+      "src_infrastructure_services_logcleanupbackgroundservice_cs_cancellationtoken",
+      "src_infrastructure_services_logcleanupbackgroundservice_cs_task"
+    ],
+    "22": [
+      "products_updateproducthandlertests_updateproducthandlertests_handle_withexistingproduct_updatesproduct",
+      "products_updateproducthandlertests_updateproducthandlertests_handle_withmissingproduct_throwsnotfoundexception",
+      "src_application_features_products_update_updateproducthandler_cs_cancellationtoken",
+      "src_application_features_products_update_updateproducthandler_cs_productresponse",
+      "src_application_features_products_update_updateproducthandler_cs_task",
+      "src_tests_products_updateproducthandlertests_cs_fact",
+      "src_tests_products_updateproducthandlertests_cs_task",
+      "update_updateproductcommand",
+      "update_updateproducthandler",
+      "update_updateproducthandler_updateproducthandler_handle"
+    ],
+    "23": [
+      "webapi_appsettings_contact_email",
+      "webapi_appsettings_contact_name",
+      "webapi_appsettings_license_url",
+      "webapi_appsettings_swagger",
+      "webapi_appsettings_swagger_contact",
+      "webapi_appsettings_swagger_description",
+      "webapi_appsettings_swagger_license",
+      "webapi_appsettings_swagger_title",
+      "webapi_appsettings_swagger_version"
+    ],
+    "24": [
+      "extensions_webapplicationextensions",
+      "extensions_webapplicationextensions_webapplicationextensions_configurepipeline",
+      "infrastructure_webapplicationextensions_webapplicationextensions_initializedatabaseasync",
+      "src_infrastructure_webapplicationextensions_cs_task",
+      "src_infrastructure_webapplicationextensions_cs_webapplication",
+      "src_webapi_extensions_webapplicationextensions_cs_webapplication"
+    ],
+    "25": [
+      "migrations_appdbcontextmodelsnapshot",
+      "migrations_appdbcontextmodelsnapshot_appdbcontextmodelsnapshot_buildmodel",
+      "migrations_appdbcontextmodelsnapshot_infrastructure_migrations",
+      "modelsnapshot",
+      "src_infrastructure_migrations_appdbcontextmodelsnapshot_cs_modelbuilder"
+    ],
+    "26": [
+      "products_getproductendpoint",
+      "products_getproductendpoint_getproductendpoint_map",
+      "products_getproductsendpoint_getproductsendpoint_map",
+      "src_webapi_endpoints_products_getproductendpoint_cs_iendpointroutebuilder",
+      "src_webapi_endpoints_products_getproductsendpoint_cs_iendpointroutebuilder"
+    ],
+    "27": [
+      "abstractions_iendpoint",
+      "abstractions_iendpoint_iendpoint_mapendpoint",
+      "abstractions_iendpoint_webapi_endpoints_abstractions",
+      "routegroupbuilder"
+    ],
+    "28": [
+      "configuration_swaggeroptions",
+      "configuration_swaggeroptions_swaggercontact",
+      "configuration_swaggeroptions_swaggerlicense",
+      "src_webapi_configuration_swaggeroptions_cs_string"
+    ],
+    "29": [
+      "extensions_servicecollectionextensions",
+      "extensions_servicecollectionextensions_servicecollectionextensions_addapiservices",
+      "src_webapi_extensions_servicecollectionextensions_cs_iconfiguration",
+      "src_webapi_extensions_servicecollectionextensions_cs_iservicecollection"
+    ],
+    "30": [
+      "infrastructure_dependencyinjection",
+      "infrastructure_dependencyinjection_dependencyinjection_addinfrastructure",
+      "src_infrastructure_dependencyinjection_cs_iconfiguration",
+      "src_infrastructure_dependencyinjection_cs_iservicecollection"
+    ],
+    "31": [
+      "auth_getcurrentuserendpoint",
+      "auth_getcurrentuserendpoint_getcurrentuserendpoint_map",
+      "src_webapi_endpoints_auth_getcurrentuserendpoint_cs_iendpointroutebuilder"
+    ],
+    "32": [
+      "auth_loginendpoint",
+      "auth_loginendpoint_loginendpoint_map",
+      "src_webapi_endpoints_auth_loginendpoint_cs_iendpointroutebuilder"
+    ],
+    "33": [
+      "auth_refreshtokenendpoint",
+      "auth_refreshtokenendpoint_refreshtokenendpoint_map",
+      "src_webapi_endpoints_auth_refreshtokenendpoint_cs_iendpointroutebuilder"
+    ],
+    "34": [
+      "auth_registerendpoint",
+      "auth_registerendpoint_registerendpoint_map",
+      "src_webapi_endpoints_auth_registerendpoint_cs_iendpointroutebuilder"
+    ],
+    "35": [
+      "auth_revoketokenendpoint",
+      "auth_revoketokenendpoint_revoketokenendpoint_map",
+      "src_webapi_endpoints_auth_revoketokenendpoint_cs_iendpointroutebuilder"
+    ],
+    "36": [
+      "endpoints_authendpoints",
+      "endpoints_authendpoints_authendpoints_mapauthendpoints",
+      "src_webapi_endpoints_authendpoints_cs_iendpointroutebuilder"
+    ],
+    "37": [
+      "endpoints_logendpoints",
+      "endpoints_logendpoints_logendpoints_maplogendpoints",
+      "src_webapi_endpoints_logendpoints_cs_iendpointroutebuilder"
+    ],
+    "38": [
+      "endpoints_productendpoints",
+      "endpoints_productendpoints_productendpoints_mapproductendpoints",
+      "src_webapi_endpoints_productendpoints_cs_iendpointroutebuilder"
+    ],
+    "39": [
+      "extensions_hostbuilderextensions",
+      "extensions_hostbuilderextensions_hostbuilderextensions_addserilog",
+      "ihostbuilder"
+    ],
+    "40": [
+      "products_createproductendpoint",
+      "products_createproductendpoint_createproductendpoint_map",
+      "src_webapi_endpoints_products_createproductendpoint_cs_iendpointroutebuilder"
+    ],
+    "41": [
+      "products_deleteproductendpoint",
+      "products_deleteproductendpoint_deleteproductendpoint_map",
+      "src_webapi_endpoints_products_deleteproductendpoint_cs_iendpointroutebuilder"
+    ],
+    "42": [
+      "products_updateproductendpoint",
+      "products_updateproductendpoint_updateproductendpoint_map",
+      "src_webapi_endpoints_products_updateproductendpoint_cs_iendpointroutebuilder"
+    ],
+    "43": [
+      "common_pagedrequestdto",
+      "sievemodel"
+    ],
+    "44": [
+      "docker_compose_api",
+      "docker_compose_sqlserver"
+    ],
+    "45": [
+      "common_apierrorresponsedto"
+    ],
+    "46": [
+      "login_loginrequest"
+    ],
+    "47": [
+      "readme_aspnet_core_minimal_apis"
+    ],
+    "48": [
+      "readme_dotnet_10"
+    ],
+    "49": [
+      "readme_entity_framework_core"
+    ],
+    "50": [
+      "readme_fluentvalidation"
+    ],
+    "51": [
+      "readme_jv_api"
+    ],
+    "52": [
+      "readme_mapster"
+    ],
+    "53": [
+      "readme_mediatr"
+    ],
+    "54": [
+      "readme_serilog"
+    ],
+    "55": [
+      "readme_sieve"
+    ],
+    "56": [
+      "readme_tests"
+    ],
+    "57": [
+      "readme_xunit"
+    ],
+    "58": [
+      "refresh_refreshtokenrequest"
+    ],
+    "59": [
+      "register_registerrequest"
+    ],
+    "60": [
+      "revoke_revoketokenrequest"
+    ],
+    "61": [
+      "update_updateproductrequest"
+    ],
+    "62": [
+      "webapi_program"
+    ]
+  },
+  "cohesion": {
+    "0": 0.08780487804878048,
+    "1": 0.05,
+    "2": 0.06072874493927125,
+    "3": 0.07765151515151515,
+    "4": 0.08266129032258064,
+    "5": 0.1,
+    "6": 0.12987012987012986,
+    "7": 0.09090909090909091,
+    "8": 0.09090909090909091,
+    "9": 0.16666666666666666,
+    "10": 0.20833333333333334,
+    "11": 0.19047619047619047,
+    "12": 0.2,
+    "13": 0.15384615384615385,
+    "14": 0.22727272727272727,
+    "15": 0.16666666666666666,
+    "16": 0.2909090909090909,
+    "17": 0.2,
+    "18": 0.2727272727272727,
+    "19": 0.18181818181818182,
+    "20": 0.28888888888888886,
+    "21": 0.26666666666666666,
+    "22": 0.28888888888888886,
+    "23": 0.25,
+    "24": 0.3333333333333333,
+    "25": 0.4,
+    "26": 0.4,
+    "27": 0.5,
+    "28": 0.5,
+    "29": 0.5,
+    "30": 0.5,
+    "31": 0.6666666666666666,
+    "32": 0.6666666666666666,
+    "33": 0.6666666666666666,
+    "34": 0.6666666666666666,
+    "35": 0.6666666666666666,
+    "36": 0.6666666666666666,
+    "37": 0.6666666666666666,
+    "38": 0.6666666666666666,
+    "39": 0.6666666666666666,
+    "40": 0.6666666666666666,
+    "41": 0.6666666666666666,
+    "42": 0.6666666666666666,
+    "43": 1.0,
+    "44": 1.0,
+    "45": 1.0,
+    "46": 1.0,
+    "47": 1.0,
+    "48": 1.0,
+    "49": 1.0,
+    "50": 1.0,
+    "51": 1.0,
+    "52": 1.0,
+    "53": 1.0,
+    "54": 1.0,
+    "55": 1.0,
+    "56": 1.0,
+    "57": 1.0,
+    "58": 1.0,
+    "59": 1.0,
+    "60": 1.0,
+    "61": 1.0,
+    "62": 1.0
+  },
+  "gods": [
+    {
+      "id": "tests_testbase_testbase",
+      "label": "TestBase",
+      "degree": 15
+    },
+    {
+      "id": "readme_ijwtservice",
+      "label": "IJwtService",
+      "degree": 9
+    },
+    {
+      "id": "readme_ilogcleanupservice",
+      "label": "ILogCleanupService",
+      "degree": 9
+    },
+    {
+      "id": "webapi_appsettings_smtp",
+      "label": "Smtp",
+      "degree": 8
+    },
+    {
+      "id": "createproductresponse",
+      "label": "CreateProductResponse",
+      "degree": 6
+    },
+    {
+      "id": "src_webapi_middleware_exceptionhandlingmiddleware_cs_exception",
+      "label": "Exception",
+      "degree": 6
+    },
+    {
+      "id": "properties_launchsettings_profiles_http",
+      "label": "http",
+      "degree": 6
+    },
+    {
+      "id": "properties_launchsettings_profiles_https",
+      "label": "https",
+      "degree": 6
+    },
+    {
+      "id": "webapi_appsettings_jwt",
+      "label": "Jwt",
+      "degree": 6
+    },
+    {
+      "id": "webapi_appsettings_swagger",
+      "label": "Swagger",
+      "degree": 6
+    }
+  ],
+  "surprises": [
+    {
+      "source": "IJwtService",
+      "target": "JwtOptions",
+      "source_files": [
+        "README.md",
+        "src/Infrastructure/Services/JwtService.cs"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "crosses file types (code \u2194 doc); connects across different repos/directories; peripheral node `JwtOptions` unexpectedly reaches hub `IJwtService`"
+    },
+    {
+      "source": "ILogCleanupService",
+      "target": "AppDbContext",
+      "source_files": [
+        "README.md",
+        "src/Infrastructure/Services/LogCleanupService.cs"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "crosses file types (code \u2194 doc); connects across different repos/directories; peripheral node `AppDbContext` unexpectedly reaches hub `ILogCleanupService`"
+    },
+    {
+      "source": "ILogCleanupService",
+      "target": "LogCleanupOptions",
+      "source_files": [
+        "README.md",
+        "src/Infrastructure/Services/LogCleanupService.cs"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "crosses file types (code \u2194 doc); connects across different repos/directories; peripheral node `LogCleanupOptions` unexpectedly reaches hub `ILogCleanupService`"
+    },
+    {
+      "source": "FakeJwtService",
+      "target": "IJwtService",
+      "source_files": [
+        "src/Tests/TestBase.cs",
+        "README.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "implements",
+      "why": "crosses file types (code \u2194 doc); connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "ICurrentUserService",
+      "target": "IHttpContextAccessor",
+      "source_files": [
+        "README.md",
+        "src/Infrastructure/Services/CurrentUserService.cs"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "crosses file types (code \u2194 doc); connects across different repos/directories"
+    }
+  ],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}
