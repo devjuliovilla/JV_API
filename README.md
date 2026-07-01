@@ -1,6 +1,6 @@
 # JV API
 
-JV API is a pragmatic .NET 10 Web API boilerplate for starting new API projects with the pieces that are usually needed from day one: Minimal APIs, vertical slices, CQRS-style handlers, validation, authentication, persistence, logging, Docker, database migrations, seed data, and tests.
+JV API is a pragmatic .NET 10 Web API boilerplate for starting new API projects with the pieces that are usually needed from day one: Minimal APIs, vertical slices, CQRS-style handlers, validation, authentication, persistence, logging, Docker, seed data, and tests.
 
 This repository is a starting point, not a finished production product. Security policies, permissions, domain rules, deployment hardening, and project-specific modules are expected to be adjusted by the developer using the template.
 
@@ -52,7 +52,7 @@ In practice:
 
 - `Domain` contains entities, shared domain abstractions, and option types used by infrastructure services.
 - `Application` contains use cases: commands, queries, handlers, validators, DTOs, application exceptions, and persistence abstractions.
-- `Infrastructure` contains framework and external-service implementations: EF Core, SQL Server, migrations, seed data, JWT, SMTP, file storage, logging cleanup, and dependency injection.
+- `Infrastructure` contains framework and external-service implementations: EF Core, SQL Server, seed data, JWT, SMTP, file storage, logging cleanup, and dependency injection.
 - `WebApi` contains the HTTP delivery layer: Minimal API endpoints, middleware, Swagger, CORS, rate limiting, and application startup.
 - `Tests` contains handler, behavior, mapping, persistence, and infrastructure tests.
 
@@ -66,7 +66,7 @@ Path: `src/Domain`
 
 Contains:
 
-- entities: `User`, `Role`, `UserRole`, `RefreshToken`, `Category`, `Product`
+- entities: `User`, `Role`, `UserRole`, `RefreshToken`
 - shared base class: `EntityBase`
 - service ports: `IJwtService`, `IEmailService`, `IFileStorageService`, `ICurrentUserService`, `ILogCleanupService`
 - option models: `JwtOptions`, `SmtpOptions`, `FileStorageOptions`, `LogCleanupOptions`
@@ -97,13 +97,6 @@ Application/Features/
     Refresh/
     Revoke/
     Me/
-  Products/
-    Common/
-    Create/
-    Update/
-    Delete/
-    Get/
-    List/
 ```
 
 ### Infrastructure
@@ -114,7 +107,6 @@ Contains:
 
 - EF Core `AppDbContext`
 - entity configurations
-- migrations
 - seed data
 - audit and soft-delete interceptors
 - JWT generation and token validation helpers
@@ -145,18 +137,17 @@ Contains:
 
 ## Request Flow
 
-For a typical request such as product creation:
+For a typical request such as login:
 
-1. `POST /api/v1/products` reaches `CreateProductEndpoint`.
-2. The endpoint receives `CreateProductRequest`.
-3. The endpoint creates `CreateProductCommand`.
+1. `POST /api/v1/auth/login` reaches `LoginEndpoint`.
+2. The endpoint receives `LoginRequest`.
+3. The endpoint creates `LoginCommand`.
 4. The endpoint sends the command with MediatR `ISender`.
-5. `ValidationBehavior` runs `CreateProductValidator`.
-6. `CreateProductHandler` executes the use case through `IAppDbContext`.
-7. EF Core persists the entity through `AppDbContext`.
-8. Audit and soft-delete interceptors run during `SaveChangesAsync` when applicable.
-9. The handler returns `CreateProductResponse`.
-10. The endpoint returns `201 Created`.
+5. `ValidationBehavior` runs `LoginValidator`.
+6. `LoginHandler` executes the use case through `IAppDbContext` and domain services.
+7. EF Core reads persisted data through `AppDbContext`.
+8. The handler returns `LoginResponse`.
+9. The endpoint returns `200 OK`.
 
 The endpoint stays thin. Application code owns use-case orchestration. Infrastructure owns external details.
 
@@ -181,10 +172,8 @@ At startup:
 Current endpoint base classes:
 
 - `AuthEndpoint`
-- `ProductsEndpoint`
-- `LogsEndpoint`
 
-Logging is implemented through Serilog and SQL cleanup. The boilerplate also includes a simple logs test endpoint for validating the logging pipeline during development.
+Logging is implemented through Serilog and SQL cleanup.
 
 ## API Endpoints
 
@@ -199,26 +188,6 @@ Base route: `/api/v1/auth`
 | `POST` | `/refresh` | No | `RefreshTokenHandler` |
 | `POST` | `/revoke` | Yes | `RevokeTokenHandler` |
 | `GET` | `/me` | Yes | `GetCurrentUserHandler` |
-
-### Products
-
-Base route: `/api/v1/products`
-
-| Method | Route | Auth | Handler |
-|---|---|---|---|
-| `GET` | `/` | No | `GetProductsHandler` |
-| `GET` | `/{id}` | No | `GetProductHandler` |
-| `POST` | `/` | Yes | `CreateProductHandler` |
-| `PUT` | `/{id}` | Yes | `UpdateProductHandler` |
-| `DELETE` | `/{id}` | Yes | `DeleteProductHandler` |
-
-### Logs
-
-Base route: `/api/v1/logs`
-
-| Method | Route | Auth | Description |
-|---|---|---|---|
-| `POST` | `/test` | No | Writes a test log entry through Serilog. |
 
 ### Health
 
@@ -272,8 +241,6 @@ FluentValidation validators live next to the use case they validate.
 
 Examples:
 
-- `CreateProductValidator`
-- `UpdateProductValidator`
 - `LoginValidator`
 - `RegisterValidator`
 
@@ -307,8 +274,6 @@ public interface IAppDbContext
     DbSet<Role> Roles { get; }
     DbSet<UserRole> UserRoles { get; }
     DbSet<RefreshToken> RefreshTokens { get; }
-    DbSet<Category> Categories { get; }
-    DbSet<Product> Products { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
@@ -324,8 +289,6 @@ Current database schemas:
 | `sec` | `Roles` | Authorization roles |
 | `sec` | `UserRoles` | User-role join table |
 | `sec` | `RefreshTokens` | Refresh token storage |
-| `cat` | `Categories` | Product categories |
-| `dbo` | `Products` | Product catalog sample |
 | `audit` | `Logs` | Serilog SQL sink table |
 
 ## Auditing And Soft Delete
@@ -381,6 +344,8 @@ When `SeedOnStartup` is `true`, seed data is inserted idempotently.
 
 This behavior is intentional for the boilerplate because it makes local development and first runs simple.
 
+This starter branch intentionally does not include tracked EF Core migrations. The expectation is that each new project creates its own first migration after renaming the database and adding the entities it needs.
+
 ## Seed Data
 
 The seed creates:
@@ -388,8 +353,6 @@ The seed creates:
 - role `Admin`
 - role `User`
 - user `admin`
-- sample categories: `Electronics`, `Books`
-- sample products: `Laptop`, `Mouse`, `.NET Guide`
 
 Default seed user:
 
@@ -401,39 +364,7 @@ The seed is meant for development and template demonstration. Change or remove i
 
 ## Querying, Filtering, And Pagination
 
-Product listing uses Sieve for filtering, sorting, and pagination.
-
-`GetProductsQuery` inherits from `PagedRequestDto`, which in turn inherits from Sieve's `SieveModel`.
-
-`GetProductsQuery` supports:
-
-- `Page`
-- `PageSize`
-- `Filters`
-- `Sorts`
-
-The endpoint receives these values as query string parameters:
-
-```text
-GET /api/v1/products?page=1&pageSize=10&filters=name@=lap&sorts=-price
-```
-
-Sieve is applied over the product `IQueryable` before `ToListAsync()`, so filtering, sorting, pagination, and counting run in the database query instead of in-memory lists.
-
-Response shape:
-
-```csharp
-public class PagedResponseDto<T>
-{
-    public List<T> Items { get; set; } = [];
-    public int Page { get; set; }
-    public int PageSize { get; set; }
-    public int TotalCount { get; set; }
-    public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
-}
-```
-
-Mapping is done with Mapster in handlers and query projections.
+Sieve and `PagedRequestDto` remain available in the starter for future listing endpoints, but this branch does not ship a sample catalog or list endpoint anymore. Add those pieces only when your project needs them.
 
 ## Logging
 
@@ -458,8 +389,6 @@ The SQL Server sink writes to:
   "RunIntervalHours": 24
 }
 ```
-
-The API includes `POST /api/v1/logs/test` as a development-friendly smoke test for the logging pipeline.
 
 ## Health Checks
 
@@ -610,6 +539,26 @@ Docker Compose uses environment variables from `.env`.
 
 ## Local Development
 
+### Clone This Starter Branch
+
+If you want to clone the repository directly into this clean starter branch:
+
+```bash
+git clone --branch project-starter --single-branch <repo-url>
+```
+
+Example:
+
+```bash
+git clone --branch project-starter --single-branch https://github.com/<owner>/<repo>.git
+```
+
+If you already cloned the repository and want to switch to this branch:
+
+```bash
+git switch project-starter
+```
+
 Restore packages:
 
 ```bash
@@ -685,6 +634,37 @@ http://localhost:8080
 
 ## Migrations
 
+This branch is intended to be the base for new projects, so the tracked migration files were removed on purpose.
+
+Recommended first-run flow:
+
+1. Change the database name in `src/WebApi/appsettings.Development.json` or in your environment variables.
+2. Add your own entities and EF Core configurations.
+3. Create the first migration for your project.
+4. Apply that migration to your new database.
+
+Example local connection string change:
+
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=localhost;Database=MyNewApi_Dev;Integrated Security=True;TrustServerCertificate=True;MultipleActiveResultSets=True"
+}
+```
+
+Create the first migration:
+
+```bash
+dotnet ef migrations add InitialCreate --project src/Infrastructure --startup-project src/WebApi
+```
+
+Apply it:
+
+```bash
+dotnet ef database update --project src/Infrastructure --startup-project src/WebApi
+```
+
+If `Database:ApplyMigrations` stays enabled, the API can also apply pending migrations on startup after your first migration exists.
+
 Create a migration:
 
 ```bash
@@ -710,10 +690,6 @@ src/Tests
 Current coverage includes:
 
 - auth handlers: register, login, refresh, revoke, current user
-- product handlers: create, get, list, update, delete
-- validation behavior
-- mapping and query behavior around products
-- soft-delete query filter behavior
 - log cleanup service behavior
 
 Run tests:
@@ -774,7 +750,7 @@ These choices are intentional defaults for a starter project:
 - endpoints are discovered by reflection
 - handlers use EF Core through `IAppDbContext`
 - Mapster is used directly in handlers/projections
-- Sieve is used for product listing
+- Sieve remains available for future list endpoints
 
 These are easy to change when a real project needs stricter boundaries or a different style.
 
