@@ -12,27 +12,19 @@ public class GetProductsHandler(IAppDbContext db, ISieveProcessor sieveProcessor
 {
     public async Task<PagedResponseDto<ProductResponse>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
     {
-        var query = db.Products
+        IQueryable<ProductResponse> query = db.Products
             .Include(p => p.Category)
             .ProjectToType<ProductResponse>()
             .AsNoTracking();
 
-        var sieveModel = new Sieve.Models.SieveModel
-        {
-            Page = request.Page,
-            PageSize = request.PageSize,
-            Filters = request.Filters,
-            Sorts = request.Sorts
-        };
-
-        var result = await sieveProcessor.Apply(sieveModel, query).ToListAsync(cancellationToken);
-        var totalCount = await sieveProcessor.Apply(sieveModel, query, applyPagination: false).CountAsync(cancellationToken);
+        var result = await sieveProcessor.Apply(request, query).ToListAsync(cancellationToken);
+        var totalCount = await sieveProcessor.Apply(request, query, applyPagination: false).CountAsync(cancellationToken);
 
         return new PagedResponseDto<ProductResponse>
         {
             Items = result,
-            Page = request.Page,
-            PageSize = request.PageSize,
+            Page = request.Page ?? 1,
+            PageSize = request.PageSize ?? 10,
             TotalCount = totalCount
         };
     }

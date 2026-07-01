@@ -6,6 +6,12 @@ GET {{baseUrl}}/api/v1/products?page=1&pageSize=10
 ### List Products with filters
 GET {{baseUrl}}/api/v1/products?page=1&pageSize=10&filters=name@=Product
 
-### List Products with sorting
-GET {{baseUrl}}/api/v1/products?page=1&pageSize=10&sorts=price,desc
+### List Products with sorting ascending
+GET {{baseUrl}}/api/v1/products?page=1&pageSize=10&sorts=price
+
+### List Products with sorting descending
+GET {{baseUrl}}/api/v1/products?page=1&pageSize=10&sorts=-price
+
+### List Products with filters and sorting
+GET {{baseUrl}}/api/v1/products?page=1&pageSize=10&filters=name@=Product&sorts=-price
 

@@ -403,12 +403,22 @@ The seed is meant for development and template demonstration. Change or remove i
 
 Product listing uses Sieve for filtering, sorting, and pagination.
 
+`GetProductsQuery` inherits from `PagedRequestDto`, which in turn inherits from Sieve's `SieveModel`.
+
 `GetProductsQuery` supports:
 
 - `Page`
 - `PageSize`
 - `Filters`
 - `Sorts`
+
+The endpoint receives these values as query string parameters:
+
+```text
+GET /api/v1/products?page=1&pageSize=10&filters=name@=lap&sorts=-price
+```
+
+Sieve is applied over the product `IQueryable` before `ToListAsync()`, so filtering, sorting, pagination, and counting run in the database query instead of in-memory lists.
 
 Response shape:
 
