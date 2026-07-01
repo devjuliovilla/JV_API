@@ -1,4 +1,5 @@
 @baseUrl = https://localhost:7115
+@refreshToken = paste-refresh-token-here
 
 ### Refresh Token
 POST {{baseUrl}}/api/v1/auth/refresh

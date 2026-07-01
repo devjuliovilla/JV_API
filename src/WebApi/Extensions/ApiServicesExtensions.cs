@@ -1,4 +1,4 @@
-using Application.Abstractions.Persistence;
+using Application;
 using Application.Behaviors;
 using FluentValidation;
 using MediatR;
@@ -9,21 +9,56 @@ using WebApi.Configuration;
 
 namespace WebApi.Extensions;
 
-public static class ServiceCollectionExtensions
+public static class ApiServicesExtensions
 {
     public static IServiceCollection AddApiServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddApplicationServices();
+        services.AddSwaggerDocumentation(configuration);
+        services.AddApiRateLimiting(configuration);
+        services.AddApiCors(configuration);
+
+        return services;
+    }
+
+    private static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    {
         services.AddMediatR(cfg =>
         {
-            cfg.RegisterServicesFromAssembly(typeof(IAppDbContext).Assembly);
+            cfg.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly);
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
 
-        services.AddValidatorsFromAssembly(typeof(IAppDbContext).Assembly);
+        services.AddValidatorsFromAssembly(typeof(AssemblyReference).Assembly);
 
+        return services;
+    }
+
+    private static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services, IConfiguration configuration)
+    {
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
         {
+            var bearerScheme = new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "Enter a valid JWT bearer token."
+            };
+
+            options.AddSecurityDefinition("Bearer", bearerScheme);
+
+            options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecuritySchemeReference("Bearer", document, null),
+                    []
+                }
+            });
+
             var swaggerOptions = configuration.GetSection(SwaggerOptions.Section).Get<SwaggerOptions>();
             if (swaggerOptions is not null)
             {
@@ -48,6 +83,12 @@ public static class ServiceCollectionExtensions
                 options.IncludeXmlComments(xmlPath);
             }
         });
+
+        return services;
+    }
+
+    private static IServiceCollection AddApiRateLimiting(this IServiceCollection services, IConfiguration configuration)
+    {
         var rateLimitSection = configuration.GetSection("RateLimiting");
         var permitLimit = rateLimitSection.GetValue<int>("PermitLimit", 100);
         var windowSeconds = rateLimitSection.GetValue<int>("WindowSeconds", 60);
@@ -64,6 +105,11 @@ public static class ServiceCollectionExtensions
             });
         });
 
+        return services;
+    }
+
+    private static IServiceCollection AddApiCors(this IServiceCollection services, IConfiguration configuration)
+    {
         var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
         services.AddCors(options =>
         {

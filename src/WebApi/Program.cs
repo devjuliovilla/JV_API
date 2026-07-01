@@ -2,6 +2,7 @@ using WebApi.Extensions;
 using WebApi.Endpoints;
 using Infrastructure;
 using Serilog;
+using Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

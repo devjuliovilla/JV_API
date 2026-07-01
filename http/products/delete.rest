@@ -1,5 +1,5 @@
 @baseUrl = https://localhost:7115
-@token = {{token}}
+@token = paste-access-token-here
 @productId = 1
 
 ### Delete Product (soft delete)

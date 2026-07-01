@@ -13,11 +13,23 @@ using Infrastructure.Interceptors;
 using Infrastructure.Persistence;
 using Infrastructure.Services;
 
-namespace Infrastructure;
+namespace Infrastructure.Extensions;
 
-public static class DependencyInjection
+public static class ApplicationServicesExtensions
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddPersistence(configuration);
+        services.AddConfiguredOptions(configuration);
+        services.AddInfrastructureServices();
+        services.AddJwtAuthentication(configuration);
+        services.AddAuthorization();
+        services.AddQueryingAndHealthChecks();
+
+        return services;
+    }
+
+    private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<AuditInterceptor>();
 
@@ -28,8 +40,14 @@ public static class DependencyInjection
                 sp.GetRequiredService<AuditInterceptor>(),
                 new SoftDeleteInterceptor());
         });
+
         services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
 
+        return services;
+    }
+
+    private static IServiceCollection AddConfiguredOptions(this IServiceCollection services, IConfiguration configuration)
+    {
         services.AddOptions<JwtOptions>()
             .Bind(configuration.GetSection(JwtOptions.Section))
             .Validate(options => !string.IsNullOrWhiteSpace(options.SecretKey), "JWT secret key is required.")
@@ -38,10 +56,16 @@ public static class DependencyInjection
             .Validate(options => !string.IsNullOrWhiteSpace(options.Issuer), "JWT issuer is required.")
             .Validate(options => !string.IsNullOrWhiteSpace(options.Audience), "JWT audience is required.")
             .ValidateOnStart();
+
         services.Configure<SmtpOptions>(configuration.GetSection(SmtpOptions.Section));
         services.Configure<FileStorageOptions>(configuration.GetSection(FileStorageOptions.Section));
         services.Configure<LogCleanupOptions>(configuration.GetSection(LogCleanupOptions.Section));
 
+        return services;
+    }
+
+    private static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
+    {
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IFileStorageService, LocalFileStorageService>();
@@ -50,6 +74,11 @@ public static class DependencyInjection
         services.AddHostedService<LogCleanupBackgroundService>();
         services.AddHttpContextAccessor();
 
+        return services;
+    }
+
+    private static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
         var jwtOptions = configuration.GetSection(JwtOptions.Section).Get<JwtOptions>()
             ?? throw new InvalidOperationException("JWT configuration is missing.");
 
@@ -69,8 +98,11 @@ public static class DependencyInjection
                 };
             });
 
-        services.AddAuthorization();
+        return services;
+    }
 
+    private static IServiceCollection AddQueryingAndHealthChecks(this IServiceCollection services)
+    {
         services.AddScoped<ISieveProcessor, SieveProcessor>();
         services.AddHealthChecks()
             .AddDbContextCheck<AppDbContext>("database");

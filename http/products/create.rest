@@ -1,15 +1,17 @@
 @baseUrl = https://localhost:7115
-@token = {{token}}
+@token = paste-access-token-here
+@categoryId = 1
 
 ### Create Product
+# Uses a seeded category id from a fresh database. Adjust if your database already had categories.
 POST {{baseUrl}}/api/v1/products
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "name": "New Product",
-  "description": "A brand new product",
+  "name": "Manual Product",
+  "description": "Created from REST client",
   "price": 99.99,
-  "categoryId": 1
+  "categoryId": {{categoryId}}
 }
 

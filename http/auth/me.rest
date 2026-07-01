@@ -1,5 +1,5 @@
 @baseUrl = https://localhost:7115
-@token = {{token}}
+@token = paste-access-token-here
 
 ### Get Current User
 GET {{baseUrl}}/api/v1/auth/me

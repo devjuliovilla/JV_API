@@ -1,20 +1,12 @@
 @baseUrl = https://localhost:7115
 
 ### Login as Admin
+# @name login
 POST {{baseUrl}}/api/v1/auth/login
 Content-Type: application/json
 
 {
   "username": "admin",
   "password": "Admin123!"
-}
-
-### Login as Regular User
-POST {{baseUrl}}/api/v1/auth/login
-Content-Type: application/json
-
-{
-  "username": "testuser",
-  "password": "Test123!"
 }
 

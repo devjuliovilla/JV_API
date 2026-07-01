@@ -7,6 +7,15 @@ namespace Infrastructure.Seed;
 
 public static class SeedData
 {
+    private static readonly (string Name, string Description)[] CategorySeeds =
+    [
+        ("Electronics", "Electronic items"),
+        ("Books", "Books and publications"),
+        ("Home", "Home and kitchen products"),
+        ("Sports", "Sports and fitness gear"),
+        ("Office", "Office essentials and accessories")
+    ];
+
     public static async Task InitializeAsync(AppDbContext context, CancellationToken cancellationToken = default)
     {
         var adminRole = await context.Roles.FirstOrDefaultAsync(r => r.Name == "Admin", cancellationToken);
@@ -43,35 +52,68 @@ public static class SeedData
             context.UserRoles.Add(new UserRole { User = adminUser, Role = adminRole });
         }
 
-        var electronics = await context.Categories.FirstOrDefaultAsync(c => c.Name == "Electronics", cancellationToken);
-        if (electronics is null)
-        {
-            electronics = new Category { Name = "Electronics", Description = "Electronic items" };
-            context.Categories.Add(electronics);
-        }
-
-        var books = await context.Categories.FirstOrDefaultAsync(c => c.Name == "Books", cancellationToken);
-        if (books is null)
-        {
-            books = new Category { Name = "Books", Description = "Books and publications" };
-            context.Categories.Add(books);
-        }
-
-        if (!await context.Products.AnyAsync(p => p.Name == "Laptop", cancellationToken))
-        {
-            context.Products.Add(new Product { Name = "Laptop", Description = "High performance laptop", Price = 1200.00m, Category = electronics });
-        }
-
-        if (!await context.Products.AnyAsync(p => p.Name == "Mouse", cancellationToken))
-        {
-            context.Products.Add(new Product { Name = "Mouse", Description = "Wireless mouse", Price = 25.00m, Category = electronics });
-        }
-
-        if (!await context.Products.AnyAsync(p => p.Name == ".NET Guide", cancellationToken))
-        {
-            context.Products.Add(new Product { Name = ".NET Guide", Description = "Complete .NET guide", Price = 45.00m, Category = books });
-        }
+        var categoriesByName = await EnsureCategoriesAsync(context, cancellationToken);
+        await EnsureProductsAsync(context, categoriesByName, cancellationToken);
 
         await context.SaveChangesAsync(cancellationToken);
+    }
+
+    private static async Task<Dictionary<string, Category>> EnsureCategoriesAsync(AppDbContext context, CancellationToken cancellationToken)
+    {
+        var existingCategories = await context.Categories
+            .ToDictionaryAsync(category => category.Name, cancellationToken);
+
+        foreach (var (name, description) in CategorySeeds)
+        {
+            if (existingCategories.ContainsKey(name))
+            {
+                continue;
+            }
+
+            var category = new Category
+            {
+                Name = name,
+                Description = description
+            };
+
+            context.Categories.Add(category);
+            existingCategories[name] = category;
+        }
+
+        return existingCategories;
+    }
+
+    private static async Task EnsureProductsAsync(
+        AppDbContext context,
+        IReadOnlyDictionary<string, Category> categoriesByName,
+        CancellationToken cancellationToken)
+    {
+        var existingProductNames = await context.Products
+            .Select(product => product.Name)
+            .ToHashSetAsync(cancellationToken);
+
+        foreach (var (categoryName, _) in CategorySeeds)
+        {
+            var category = categoriesByName[categoryName];
+
+            for (var index = 1; index <= 40; index++)
+            {
+                var productName = $"{categoryName} Product {index:000}";
+                if (existingProductNames.Contains(productName))
+                {
+                    continue;
+                }
+
+                context.Products.Add(new Product
+                {
+                    Name = productName,
+                    Description = $"Sample {categoryName.ToLowerInvariant()} product #{index}.",
+                    Price = 10m + (index * 3.5m),
+                    Category = category
+                });
+
+                existingProductNames.Add(productName);
+            }
+        }
     }
 }

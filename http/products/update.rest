@@ -1,6 +1,7 @@
 @baseUrl = https://localhost:7115
-@token = {{token}}
+@token = paste-access-token-here
 @productId = 1
+@categoryId = 1
 
 ### Update Product
 PUT {{baseUrl}}/api/v1/products/{{productId}}
@@ -11,6 +12,6 @@ Content-Type: application/json
   "name": "Updated Product",
   "description": "Updated description",
   "price": 49.99,
-  "categoryId": 1
+  "categoryId": {{categoryId}}
 }
 

@@ -1,5 +1,6 @@
 @baseUrl = https://localhost:7115
-@token = {{token}}
+@token = paste-access-token-here
+@refreshToken = paste-refresh-token-here
 
 ### Revoke Refresh Token
 POST {{baseUrl}}/api/v1/auth/revoke
