@@ -5,12 +5,18 @@ using Microsoft.Extensions.Logging;
 using MediatR;
 using Domain.Entities;
 using Domain.Abstractions.Services;
+using Domain.Settings;
 using Application.Exceptions;
 using Application.Features.Auth.Login;
+using Microsoft.Extensions.Options;
 
 namespace Application.Features.Auth.Login;
 
-public class LoginHandler(IAppDbContext db, IJwtService jwtService, ILogger<LoginHandler> logger) : IRequestHandler<LoginCommand, LoginResponse>
+public class LoginHandler(
+    IAppDbContext db,
+    IJwtService jwtService,
+    IOptions<JwtOptions> jwtOptions,
+    ILogger<LoginHandler> logger) : IRequestHandler<LoginCommand, LoginResponse>
 {
     public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
@@ -36,7 +42,7 @@ public class LoginHandler(IAppDbContext db, IJwtService jwtService, ILogger<Logi
         {
             UserId = user.Id,
             Token = jwtService.GenerateRefreshToken(),
-            ExpiresAt = DateTime.UtcNow.AddDays(1)
+            ExpiresAt = DateTime.UtcNow.AddDays(Math.Max(1, jwtOptions.Value.RefreshTokenExpirationDays))
         };
         db.RefreshTokens.Add(refreshToken);
         await db.SaveChangesAsync(cancellationToken);

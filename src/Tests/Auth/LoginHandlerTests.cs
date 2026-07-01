@@ -3,7 +3,9 @@ using Application.Features.Auth.Login;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using Domain.Entities;
+using Domain.Settings;
 
 namespace Tests.Auth;
 
@@ -19,7 +21,7 @@ public class LoginHandlerTests : TestBase
         user.PasswordHash = new PasswordHasher<User>().HashPassword(user, "Test123!");
         await context.SaveChangesAsync();
         var jwtService = new FakeJwtService { AccessToken = "access-token", RefreshToken = "refresh-token" };
-        var handler = new LoginHandler(context, jwtService, NullLogger<LoginHandler>.Instance);
+        var handler = new LoginHandler(context, jwtService, JwtOptions(), NullLogger<LoginHandler>.Instance);
 
         // Act
         var response = await handler.Handle(new LoginCommand("testuser", "Test123!"), CancellationToken.None);
@@ -39,7 +41,7 @@ public class LoginHandlerTests : TestBase
         var user = await context.Users.FirstAsync(u => u.Username == "testuser");
         user.PasswordHash = new PasswordHasher<User>().HashPassword(user, "Test123!");
         await context.SaveChangesAsync();
-        var handler = new LoginHandler(context, new FakeJwtService(), NullLogger<LoginHandler>.Instance);
+        var handler = new LoginHandler(context, new FakeJwtService(), JwtOptions(), NullLogger<LoginHandler>.Instance);
 
         // Act
         var act = () => handler.Handle(new LoginCommand("testuser", "WrongPassword"), CancellationToken.None);
@@ -58,7 +60,7 @@ public class LoginHandlerTests : TestBase
         user.IsActive = false;
         user.PasswordHash = new PasswordHasher<User>().HashPassword(user, "Test123!");
         await context.SaveChangesAsync();
-        var handler = new LoginHandler(context, new FakeJwtService(), NullLogger<LoginHandler>.Instance);
+        var handler = new LoginHandler(context, new FakeJwtService(), JwtOptions(), NullLogger<LoginHandler>.Instance);
 
         // Act
         var act = () => handler.Handle(new LoginCommand("testuser", "Test123!"), CancellationToken.None);
@@ -66,4 +68,6 @@ public class LoginHandlerTests : TestBase
         // Assert
         await Assert.ThrowsAsync<UnauthorizedException>(act);
     }
+
+    private static IOptions<JwtOptions> JwtOptions() => Options.Create(new JwtOptions());
 }

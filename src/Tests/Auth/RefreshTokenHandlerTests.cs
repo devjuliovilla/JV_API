@@ -1,7 +1,9 @@
 using Application.Exceptions;
 using Application.Features.Auth.Refresh;
 using Domain.Entities;
+using Domain.Settings;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Tests.Auth;
 
@@ -22,7 +24,7 @@ public class RefreshTokenHandlerTests : TestBase
         });
         await context.SaveChangesAsync();
         var jwtService = new FakeJwtService { AccessToken = "new-access-token", RefreshToken = "new-refresh-token" };
-        var handler = new RefreshTokenHandler(context, jwtService);
+        var handler = new RefreshTokenHandler(context, jwtService, JwtOptions());
 
         // Act
         var response = await handler.Handle(new RefreshTokenCommand("old-refresh-token"), CancellationToken.None);
@@ -42,7 +44,7 @@ public class RefreshTokenHandlerTests : TestBase
     {
         // Arrange
         using var context = CreateDbContext();
-        var handler = new RefreshTokenHandler(context, new FakeJwtService());
+        var handler = new RefreshTokenHandler(context, new FakeJwtService(), JwtOptions());
 
         // Act
         var act = () => handler.Handle(new RefreshTokenCommand("missing"), CancellationToken.None);
@@ -66,7 +68,7 @@ public class RefreshTokenHandlerTests : TestBase
             IsRevoked = true
         });
         await context.SaveChangesAsync();
-        var handler = new RefreshTokenHandler(context, new FakeJwtService());
+        var handler = new RefreshTokenHandler(context, new FakeJwtService(), JwtOptions());
 
         // Act
         var act = () => handler.Handle(new RefreshTokenCommand("revoked-refresh-token"), CancellationToken.None);
@@ -74,4 +76,6 @@ public class RefreshTokenHandlerTests : TestBase
         // Assert
         await Assert.ThrowsAsync<UnauthorizedException>(act);
     }
+
+    private static IOptions<JwtOptions> JwtOptions() => Options.Create(new JwtOptions());
 }

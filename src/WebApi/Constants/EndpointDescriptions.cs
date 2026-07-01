@@ -27,7 +27,7 @@ public static class EndpointDescriptions
     // Logs
     #region Logs
 
-    public const string GetLogs = "Retrieve application logs.";
+    public const string TestLog = "Write a test log entry through Serilog.";
 
     #endregion
 

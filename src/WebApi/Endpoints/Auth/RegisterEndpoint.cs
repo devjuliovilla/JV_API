@@ -19,6 +19,6 @@ public sealed class RegisterEndpoint : AuthEndpoint
         })
         .AllowAnonymous()
         .WithName(EndpointNames.Register)
-.WithDescription(EndpointDescriptions.Register);
+        .WithDescription(EndpointDescriptions.Register);
     }
 }

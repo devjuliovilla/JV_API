@@ -18,6 +18,6 @@ public sealed class RevokeTokenEndpoint : AuthEndpoint
         })
         .RequireAuthorization()
         .WithName(EndpointNames.RevokeToken)
-.WithDescription(EndpointDescriptions.RevokeToken);
+        .WithDescription(EndpointDescriptions.RevokeToken);
     }
 }

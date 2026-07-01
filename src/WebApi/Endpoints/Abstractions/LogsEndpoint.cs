@@ -1,4 +1,4 @@
-﻿using WebApi.Constants;
+using WebApi.Constants;
 
 namespace WebApi.Endpoints.Abstractions;
 

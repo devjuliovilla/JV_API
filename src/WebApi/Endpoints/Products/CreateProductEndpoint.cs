@@ -19,6 +19,6 @@ public sealed class CreateProductEndpoint : ProductsEndpoint
         })
         .RequireAuthorization()
         .WithName(EndpointNames.CreateProduct)
-.WithDescription(EndpointDescriptions.CreateProduct);
+        .WithDescription(EndpointDescriptions.CreateProduct);
     }
 }

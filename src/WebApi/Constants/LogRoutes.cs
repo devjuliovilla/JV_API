@@ -1,4 +1,4 @@
-﻿namespace WebApi.Constants;
+namespace WebApi.Constants;
 
 public static class LogRoutes
 {

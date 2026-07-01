@@ -27,7 +27,7 @@ public static class EndpointNames
     // Logs
     #region Logs
 
-    public const string GetLogs = nameof(GetLogs);
+    public const string TestLog = nameof(TestLog);
 
     #endregion
 

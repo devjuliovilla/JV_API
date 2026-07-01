@@ -19,6 +19,6 @@ public sealed class UpdateProductEndpoint : ProductsEndpoint
         })
         .RequireAuthorization()
         .WithName(EndpointNames.UpdateProduct)
-.WithDescription(EndpointDescriptions.UpdateProduct);
+        .WithDescription(EndpointDescriptions.UpdateProduct);
     }
 }

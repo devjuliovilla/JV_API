@@ -18,6 +18,6 @@ public sealed class DeleteProductEndpoint : ProductsEndpoint
         })
         .RequireAuthorization()
         .WithName(EndpointNames.DeleteProduct)
-.WithDescription(EndpointDescriptions.DeleteProduct);
+        .WithDescription(EndpointDescriptions.DeleteProduct);
     }
 }

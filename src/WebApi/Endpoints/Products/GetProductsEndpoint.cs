@@ -19,6 +19,6 @@ public sealed class GetProductsEndpoint : ProductsEndpoint
         })
         .AllowAnonymous()
         .WithName(EndpointNames.GetProducts)
-.WithDescription(EndpointDescriptions.GetProducts);
+        .WithDescription(EndpointDescriptions.GetProducts);
     }
 }

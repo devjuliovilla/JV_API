@@ -19,6 +19,6 @@ public sealed class RefreshTokenEndpoint : AuthEndpoint
         })
         .AllowAnonymous()
         .WithName(EndpointNames.RefreshToken)
-.WithDescription(EndpointDescriptions.RefreshToken);
+        .WithDescription(EndpointDescriptions.RefreshToken);
     }
 }

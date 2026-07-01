@@ -3,11 +3,13 @@ using Application.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
 using Domain.Abstractions.Services;
+using Domain.Settings;
 using Application.Features.Auth.Refresh;
+using Microsoft.Extensions.Options;
 
 namespace Application.Features.Auth.Refresh;
 
-public class RefreshTokenHandler(IAppDbContext db, IJwtService jwtService) : IRequestHandler<RefreshTokenCommand, RefreshTokenResponse>
+public class RefreshTokenHandler(IAppDbContext db, IJwtService jwtService, IOptions<JwtOptions> jwtOptions) : IRequestHandler<RefreshTokenCommand, RefreshTokenResponse>
 {
     public async Task<RefreshTokenResponse> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
@@ -32,8 +34,7 @@ public class RefreshTokenHandler(IAppDbContext db, IJwtService jwtService) : IRe
         {
             UserId = user.Id,
             Token = jwtService.GenerateRefreshToken(),
-            ExpiresAt = DateTime.UtcNow.AddDays(1),
-            ReplacedByToken = newToken
+            ExpiresAt = DateTime.UtcNow.AddDays(Math.Max(1, jwtOptions.Value.RefreshTokenExpirationDays))
         };
         storedToken.ReplacedByToken = newRefreshToken.Token;
 
