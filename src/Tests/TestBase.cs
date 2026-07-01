@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Domain.Entities;
 using Domain.Abstractions.Services;
+using Domain.Entities;
 using Infrastructure.Persistence;
 using System.Security.Claims;
 
@@ -34,14 +34,6 @@ public abstract class TestBase
         };
         context.Users.Add(user);
         context.UserRoles.Add(new UserRole { User = user, Role = adminRole });
-
-        var category = new Category { Name = "Test Category" };
-        context.Categories.Add(category);
-
-        context.Products.AddRange(
-            new Product { Name = "Product 1", Price = 10.00m, Category = category },
-            new Product { Name = "Product 2", Price = 20.00m, Category = category }
-        );
 
         await context.SaveChangesAsync();
     }
