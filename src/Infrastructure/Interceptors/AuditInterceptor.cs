@@ -23,7 +23,7 @@ public class AuditInterceptor(ICurrentUserService currentUserService) : SaveChan
     {
         if (context is null) return;
 
-        var now = DateTime.UtcNow;
+        var now = DateTimeOffset.UtcNow;
         var userId = currentUserService.UserId?.ToString() ?? currentUserService.Username ?? "SYSTEM";
 
         var entries = context.ChangeTracker.Entries<EntityBase>();

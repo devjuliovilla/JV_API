@@ -14,9 +14,9 @@ public class JwtService(IOptions<JwtOptions> options) : IJwtService
 {
     private readonly JwtOptions _options = options.Value;
 
-    public (string token, DateTime expiresAt) GenerateAccessToken(User user, IEnumerable<string> roles)
+    public (string token, DateTimeOffset expiresAt) GenerateAccessToken(User user, IEnumerable<string> roles)
     {
-        var expiresAt = DateTime.UtcNow.AddMinutes(_options.ExpirationMinutes);
+        var expiresAt = DateTimeOffset.UtcNow.AddMinutes(_options.ExpirationMinutes);
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -31,7 +31,7 @@ public class JwtService(IOptions<JwtOptions> options) : IJwtService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = expiresAt,
+            Expires = expiresAt.UtcDateTime,
             Issuer = _options.Issuer,
             Audience = _options.Audience,
             SigningCredentials = credentials

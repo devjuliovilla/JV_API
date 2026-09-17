@@ -21,7 +21,7 @@ public class SoftDeleteInterceptor : SaveChangesInterceptor
     {
         if (context is null) return;
 
-        var now = DateTime.UtcNow;
+        var now = DateTimeOffset.UtcNow;
         var entries = context.ChangeTracker.Entries<EntityBase>();
 
         foreach (var entry in entries)

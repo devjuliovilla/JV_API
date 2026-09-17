@@ -42,7 +42,7 @@ public class LoginHandler(
         {
             UserId = user.Id,
             Token = jwtService.GenerateRefreshToken(),
-            ExpiresAt = DateTime.UtcNow.AddDays(Math.Max(1, jwtOptions.Value.RefreshTokenExpirationDays))
+            ExpiresAt = DateTimeOffset.UtcNow.AddDays(Math.Max(1, jwtOptions.Value.RefreshTokenExpirationDays))
         };
         db.RefreshTokens.Add(refreshToken);
         await db.SaveChangesAsync(cancellationToken);

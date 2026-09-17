@@ -40,7 +40,7 @@ public class LoginTests : TestBase
 
         // Assert
         Assert.False(string.IsNullOrEmpty(token));
-        Assert.True(expiresAt > DateTime.UtcNow);
+        Assert.True(expiresAt > DateTimeOffset.UtcNow);
     }
 
     [Fact]

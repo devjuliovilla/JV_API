@@ -317,7 +317,7 @@ Current database schemas:
 | `sec` | `Roles` | Authorization roles |
 | `sec` | `UserRoles` | User-role join table |
 | `sec` | `RefreshTokens` | Refresh token storage |
-| `dbo` | `Categories` | Product categories (reference feature) |
+| `cat` | `Categories` | Product categories (reference feature) |
 | `dbo` | `Products` | Products (reference feature) |
 | `audit` | `Logs` | Serilog SQL sink table |
 
@@ -329,15 +329,17 @@ All entities inherit from `EntityBase`:
 public abstract class EntityBase
 {
     public long Id { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
     public string CreatedBy { get; set; } = string.Empty;
-    public DateTime? UpdatedAt { get; set; }
+    public DateTimeOffset? UpdatedAt { get; set; }
     public string? UpdatedBy { get; set; }
     public bool Deleted { get; set; }
-    public DateTime? DeletedAt { get; set; }
+    public DateTimeOffset? DeletedAt { get; set; }
     public string? DeletedBy { get; set; }
 }
 ```
+
+Persisted timestamps use `DateTimeOffset` (mapped to SQL Server's `datetimeoffset`), not `DateTime`/`datetime2` — this makes the UTC offset explicit both in the database and in JSON responses, instead of relying on every caller remembering that "naive" `DateTime` values are always UTC. Refresh token expiration/revocation timestamps and JWT expiration fields in DTOs follow the same rule. Use `DateTimeOffset.UtcNow` when setting these, and only convert to `DateTime` at framework boundaries that require it (e.g. `SecurityTokenDescriptor.Expires` via `.UtcDateTime`).
 
 `AuditInterceptor`:
 
@@ -677,9 +679,17 @@ http://localhost:8080
 
 ## Migrations
 
-The repository ships one tracked migration, `20260626192028_InitialCreate`, covering the
-`sec.Users/Roles/UserRoles/RefreshTokens` tables and the `dbo.Categories/Products` reference
-feature. Starting a new project from this boilerplate:
+The repository ships two tracked migrations:
+
+- `20260626192028_InitialCreate` — `sec.Users/Roles/UserRoles/RefreshTokens` tables and the
+  `cat.Categories`/`dbo.Products` reference feature.
+- `20260917155917_UseDateTimeOffsetForTimestamps` — converts every persisted timestamp column
+  from `datetime2` to `datetimeoffset` (see "Persisted timestamps" above). If you're applying
+  this to a database that already has data from before this change, review the generated
+  migration first — altering a column's type can require a manual data conversion step depending
+  on your SQL Server version and existing values; on a fresh/dev database it's a no-op concern.
+
+Starting a new project from this boilerplate:
 
 1. Change the database name in `src/WebApi/appsettings.Development.json` (or your environment
    variables) — see the example below.

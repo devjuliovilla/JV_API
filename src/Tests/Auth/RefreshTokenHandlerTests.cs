@@ -20,7 +20,7 @@ public class RefreshTokenHandlerTests : TestBase
         {
             UserId = user.Id,
             Token = "old-refresh-token",
-            ExpiresAt = DateTime.UtcNow.AddDays(1)
+            ExpiresAt = DateTimeOffset.UtcNow.AddDays(1)
         });
         await context.SaveChangesAsync();
         var jwtService = new FakeJwtService { AccessToken = "new-access-token", RefreshToken = "new-refresh-token" };
@@ -64,7 +64,7 @@ public class RefreshTokenHandlerTests : TestBase
         {
             UserId = user.Id,
             Token = "revoked-refresh-token",
-            ExpiresAt = DateTime.UtcNow.AddDays(1),
+            ExpiresAt = DateTimeOffset.UtcNow.AddDays(1),
             IsRevoked = true
         });
         await context.SaveChangesAsync();

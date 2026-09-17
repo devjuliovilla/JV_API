@@ -48,11 +48,11 @@ public abstract class TestBase
 
     protected sealed class FakeJwtService : IJwtService
     {
-        public DateTime ExpiresAt { get; init; } = DateTime.UtcNow.AddMinutes(30);
+        public DateTimeOffset ExpiresAt { get; init; } = DateTimeOffset.UtcNow.AddMinutes(30);
         public string AccessToken { get; init; } = "access-token";
         public string RefreshToken { get; init; } = "refresh-token";
 
-        public (string token, DateTime expiresAt) GenerateAccessToken(User user, IEnumerable<string> roles)
+        public (string token, DateTimeOffset expiresAt) GenerateAccessToken(User user, IEnumerable<string> roles)
         {
             return (AccessToken, ExpiresAt);
         }

@@ -14,7 +14,7 @@ public class RevokeTokenHandler(IAppDbContext db) : IRequestHandler<RevokeTokenC
             ?? throw new NotFoundException("Refresh token not found");
 
         storedToken.IsRevoked = true;
-        storedToken.RevokedAt = DateTime.UtcNow;
+        storedToken.RevokedAt = DateTimeOffset.UtcNow;
 
         await db.SaveChangesAsync(cancellationToken);
 

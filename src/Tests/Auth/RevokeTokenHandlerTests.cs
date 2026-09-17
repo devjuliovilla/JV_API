@@ -18,7 +18,7 @@ public class RevokeTokenHandlerTests : TestBase
         {
             UserId = user.Id,
             Token = "refresh-token",
-            ExpiresAt = DateTime.UtcNow.AddDays(1)
+            ExpiresAt = DateTimeOffset.UtcNow.AddDays(1)
         });
         await context.SaveChangesAsync();
         var handler = new RevokeTokenHandler(context);

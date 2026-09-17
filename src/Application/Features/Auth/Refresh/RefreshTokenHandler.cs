@@ -24,7 +24,7 @@ public class RefreshTokenHandler(IAppDbContext db, IJwtService jwtService, IOpti
             throw new UnauthorizedException("Refresh token is expired or revoked");
 
         storedToken.IsRevoked = true;
-        storedToken.RevokedAt = DateTime.UtcNow;
+        storedToken.RevokedAt = DateTimeOffset.UtcNow;
 
         var user = storedToken.User;
         var roles = user.UserRoles.Select(ur => ur.Role.Name);
@@ -34,7 +34,7 @@ public class RefreshTokenHandler(IAppDbContext db, IJwtService jwtService, IOpti
         {
             UserId = user.Id,
             Token = jwtService.GenerateRefreshToken(),
-            ExpiresAt = DateTime.UtcNow.AddDays(Math.Max(1, jwtOptions.Value.RefreshTokenExpirationDays))
+            ExpiresAt = DateTimeOffset.UtcNow.AddDays(Math.Max(1, jwtOptions.Value.RefreshTokenExpirationDays))
         };
         storedToken.ReplacedByToken = newRefreshToken.Token;
 

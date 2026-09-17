@@ -94,6 +94,16 @@ features. To add a new use case, touch files in this order (illustrated with `Cr
 - **Auth seam**: `.RequireAuthorization()` vs `.AllowAnonymous()` directly on the endpoint's
   route builder. No role/policy-based authorization exists yet — it's an intentional, documented
   gap for consuming projects to fill in.
+- **Persisted timestamps use `DateTimeOffset`, not `DateTime`.** `EntityBase.CreatedAt/UpdatedAt/DeletedAt`,
+  `RefreshToken.ExpiresAt/RevokedAt`, and any DTO field that crosses the API boundary (e.g.
+  `LoginResponse.ExpiresAt`) are `DateTimeOffset`, mapped to SQL Server's `datetimeoffset`. This
+  makes the UTC offset explicit in both storage and JSON instead of relying on every caller
+  knowing that a "naive" `DateTime` is always UTC. Use `DateTimeOffset.UtcNow` when setting these;
+  only convert to `DateTime` at a framework boundary that requires it (e.g.
+  `SecurityTokenDescriptor.Expires` via `.UtcDateTime` in `JwtService`). If you add a new entity,
+  give any timestamp property this same type — don't reintroduce `DateTime`. The Serilog
+  `audit.Logs` table is the one exception: it's owned by the Serilog MSSqlServer sink, not EF, so
+  `LogCleanupService`/`ILogCleanupService` keep `DateTime` for that comparison.
 
 ## Test pattern
 
@@ -135,9 +145,10 @@ project genuinely doesn't need a catalog, remove it with this checklist:
 7. Delete `http/products/`.
 8. Remove the category/product seeding logic (`EnsureCategoriesAsync`/`EnsureProductsAsync`
    and their call sites) from `src/Infrastructure/Seed/SeedData.cs`.
-9. Delete the tracked migration `src/Infrastructure/Migrations/20260626192028_InitialCreate.cs`
-   (and its `.Designer.cs`/snapshot) and generate a fresh `InitialCreate` migration for your
-   project's actual schema.
+9. Delete all tracked migrations under `src/Infrastructure/Migrations/` (both
+   `InitialCreate` and `UseDateTimeOffsetForTimestamps` touch Products/Categories columns) and
+   generate a fresh `InitialCreate` migration for your project's actual schema — don't try to
+   hand-edit the existing migration files.
 
 ## Production hardening checklist
 
