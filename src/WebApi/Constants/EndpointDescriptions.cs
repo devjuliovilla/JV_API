@@ -24,13 +24,6 @@ public static class EndpointDescriptions
 
     #endregion
 
-    // Logs
-    #region Logs
-
-    public const string TestLog = "Write a test log entry through Serilog.";
-
-    #endregion
-
     // Health
     #region Health
 

@@ -24,13 +24,6 @@ public static class EndpointNames
 
     #endregion
 
-    // Logs
-    #region Logs
-
-    public const string TestLog = nameof(TestLog);
-
-    #endregion
-
     // Health
     #region Health
 

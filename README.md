@@ -4,6 +4,8 @@ JV API is a pragmatic .NET 10 Web API boilerplate for starting new API projects 
 
 This repository is a starting point, not a finished production product. Security policies, permissions, domain rules, deployment hardening, and project-specific modules are expected to be adjusted by the developer using the template.
 
+If you're an AI coding agent picking this repo up cold, read [`AGENTS.md`](./AGENTS.md) first — it has the conventions and the exact file order for adding a new feature.
+
 ## Stack
 
 - .NET 10
@@ -97,6 +99,13 @@ Application/Features/
     Refresh/
     Revoke/
     Me/
+  Products/
+    Create/
+    Get/
+    List/
+    Update/
+    Delete/
+    Common/
 ```
 
 ### Infrastructure
@@ -172,6 +181,7 @@ At startup:
 Current endpoint base classes:
 
 - `AuthEndpoint`
+- `ProductsEndpoint`
 
 Logging is implemented through Serilog and SQL cleanup.
 
@@ -188,6 +198,22 @@ Base route: `/api/v1/auth`
 | `POST` | `/refresh` | No | `RefreshTokenHandler` |
 | `POST` | `/revoke` | Yes | `RevokeTokenHandler` |
 | `GET` | `/me` | Yes | `GetCurrentUserHandler` |
+
+### Products
+
+Base route: `/api/v1/products`
+
+| Method | Route | Auth | Handler |
+|---|---|---|---|
+| `POST` | `/` | Yes | `CreateProductHandler` |
+| `GET` | `/` | No | `GetProductsHandler` (paginated, Sieve filter/sort) |
+| `GET` | `/{id}` | No | `GetProductHandler` |
+| `PUT` | `/{id}` | Yes | `UpdateProductHandler` |
+| `DELETE` | `/{id}` | Yes | `DeleteProductHandler` |
+
+Products is the boilerplate's permanent reference feature — copy its shape when adding a new
+entity (see `AGENTS.md`). It ships in every clone; see `AGENTS.md`'s "Removing the
+Products/Categories sample" section if a project doesn't need it.
 
 ### Health
 
@@ -274,6 +300,8 @@ public interface IAppDbContext
     DbSet<Role> Roles { get; }
     DbSet<UserRole> UserRoles { get; }
     DbSet<RefreshToken> RefreshTokens { get; }
+    DbSet<Category> Categories { get; }
+    DbSet<Product> Products { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
@@ -289,6 +317,8 @@ Current database schemas:
 | `sec` | `Roles` | Authorization roles |
 | `sec` | `UserRoles` | User-role join table |
 | `sec` | `RefreshTokens` | Refresh token storage |
+| `dbo` | `Categories` | Product categories (reference feature) |
+| `dbo` | `Products` | Products (reference feature) |
 | `audit` | `Logs` | Serilog SQL sink table |
 
 ## Auditing And Soft Delete
@@ -364,7 +394,18 @@ The seed is meant for development and template demonstration. Change or remove i
 
 ## Querying, Filtering, And Pagination
 
-Sieve and `PagedRequestDto` remain available in the starter for future listing endpoints, but this branch does not ship a sample catalog or list endpoint anymore. Add those pieces only when your project needs them.
+`GET /api/v1/products` demonstrates Sieve-backed pagination, filtering, and sorting via
+`PagedRequestDto`/`PagedResponseDto<T>`:
+
+```text
+GET /api/v1/products?page=1&pageSize=10
+GET /api/v1/products?filters=name@=Electronics
+GET /api/v1/products?filters=categoryName==Books&sorts=-price
+```
+
+See `http/products/list.rest` for more examples. Sieve attributes are declared on the response
+DTO (`Application/Features/Products/Common/ProductResponse.cs`), not the entity, so filtering
+stays scoped to what the API actually exposes.
 
 ## Logging
 
@@ -520,43 +561,45 @@ Development override:
 src/WebApi/appsettings.Development.json
 ```
 
-Available sections:
+Available sections and their key settings:
 
-- `ConnectionStrings`
-- `Database`
-- `Jwt`
-- `Serilog`
-- `Smtp`
-- `FileStorage`
-- `LogCleanup`
-- `RateLimiting`
-- `Cors`
-- `Sieve`
-- `Swagger`
-- `AllowedHosts`
+| Section | Setting | Default | Purpose |
+|---|---|---|---|
+| `ConnectionStrings` | `DefaultConnection` | *(empty)* | SQL Server connection string |
+| `Database` | `ApplyMigrations` | `true` | Apply pending EF migrations at startup |
+| `Database` | `SeedOnStartup` | `true` | Insert seed data idempotently at startup |
+| `Jwt` | `SecretKey` | `CHANGE-ME!!!` | Fails startup validation if left unchanged |
+| `Jwt` | `Issuer` / `Audience` | `WebApi` | JWT token claims |
+| `Jwt` | `ExpirationMinutes` | `60` | Access token lifetime |
+| `Jwt` | `RefreshTokenExpirationDays` | `1` | Refresh token lifetime |
+| `Smtp` | `Host`/`Port`/`Username`/`Password` | *(empty)* / `587` | SMTP server for `EmailService` |
+| `FileStorage` | `LocalPath` | `App_Data/Storage` | Local disk path for `LocalFileStorageService` |
+| `LogCleanup` | `RetentionDays` / `RunIntervalHours` | `7` / `24` | `LogCleanupBackgroundService` schedule |
+| `RateLimiting` | `PermitLimit` / `WindowSeconds` | `100` / `60` | Fixed-window rate limiter |
+| `Cors` | `AllowedOrigins` | `[]` | Allowed origins for the default CORS policy |
+| `Sieve` | `DefaultPageSize` / `MaxPageSize` | `25` / `100` | Product list pagination limits |
+| `Swagger` | `Title`/`Description`/`Version`/`Contact`/`License` | — | Swagger document metadata |
+| `AllowedHosts` | — | `*` | ASP.NET Core host filtering |
 
-Docker Compose uses environment variables from `.env`.
+Docker Compose uses environment variables from `.env` instead (see [Docker](#docker) below) —
+`docker-compose.yml` maps each `${VAR}` to the equivalent setting above.
+
+## HTTP Request Files
+
+The `http/` folder has ready-to-run `.rest` request files (auth, health, products), organized
+one subfolder per feature area. They use the VS Code "REST Client" extension syntax
+(`@baseUrl`/`@variable`, `# @name`). Open any `.rest` file in VS Code with that extension
+installed and click "Send Request" above a request block. `http/products/list.rest` doubles as
+the best reference for Sieve filter/sort query-string syntax.
 
 ## Local Development
 
-### Clone This Starter Branch
+### Clone
 
-If you want to clone the repository directly into this clean starter branch:
-
-```bash
-git clone --branch project-starter --single-branch <repo-url>
-```
-
-Example:
+`main` is the only boilerplate branch — clone it directly:
 
 ```bash
-git clone --branch project-starter --single-branch https://github.com/<owner>/<repo>.git
-```
-
-If you already cloned the repository and want to switch to this branch:
-
-```bash
-git switch project-starter
+git clone <repo-url>
 ```
 
 Restore packages:
@@ -634,14 +677,15 @@ http://localhost:8080
 
 ## Migrations
 
-This branch is intended to be the base for new projects, so the tracked migration files were removed on purpose.
+The repository ships one tracked migration, `20260626192028_InitialCreate`, covering the
+`sec.Users/Roles/UserRoles/RefreshTokens` tables and the `dbo.Categories/Products` reference
+feature. Starting a new project from this boilerplate:
 
-Recommended first-run flow:
-
-1. Change the database name in `src/WebApi/appsettings.Development.json` or in your environment variables.
-2. Add your own entities and EF Core configurations.
-3. Create the first migration for your project.
-4. Apply that migration to your new database.
+1. Change the database name in `src/WebApi/appsettings.Development.json` (or your environment
+   variables) — see the example below.
+2. Add your own entities and EF Core configurations alongside (or instead of) Products/Categories
+   (if removing them, see `AGENTS.md`'s removal checklist first).
+3. Generate a new migration for your changes and apply it.
 
 Example local connection string change:
 
@@ -651,33 +695,20 @@ Example local connection string change:
 }
 ```
 
-Create the first migration:
-
-```bash
-dotnet ef migrations add InitialCreate --project src/Infrastructure --startup-project src/WebApi
-```
-
-Apply it:
-
-```bash
-dotnet ef database update --project src/Infrastructure --startup-project src/WebApi
-```
-
-If `Database:ApplyMigrations` stays enabled, the API can also apply pending migrations on startup after your first migration exists.
-
 Create a migration:
 
 ```bash
 dotnet ef migrations add <Name> --project src/Infrastructure --startup-project src/WebApi
 ```
 
-Apply migrations manually:
+Apply it manually:
 
 ```bash
 dotnet ef database update --project src/Infrastructure --startup-project src/WebApi
 ```
 
-The boilerplate can also apply migrations at startup when `Database:ApplyMigrations` is enabled.
+The boilerplate can also apply pending migrations automatically at startup when
+`Database:ApplyMigrations` is enabled (the default).
 
 ## Tests
 
@@ -690,7 +721,9 @@ src/Tests
 Current coverage includes:
 
 - auth handlers: register, login, refresh, revoke, current user
+- product handlers: create, get, list, update, delete
 - log cleanup service behavior
+- validation behavior pipeline
 
 Run tests:
 
@@ -698,45 +731,13 @@ Run tests:
 dotnet test src/Tests/Tests.csproj
 ```
 
-## Adding A New Feature
+## Adding A New Feature Or Entity
 
-For a new use case:
-
-1. Create a folder under `src/Application/Features/<Area>/<UseCase>/`.
-2. Add a command or query.
-3. Add a handler.
-4. Add request/response DTOs if the slice owns them.
-5. Add a validator when input validation is needed.
-6. Add an endpoint under `src/WebApi/Endpoints/<Area>/`.
-7. Use `ISender` in the endpoint to send the command/query.
-8. Add constants for routes, names, tags, or descriptions when needed.
-9. Add tests for the handler and any important behavior.
-
-Example shape:
-
-```text
-Application/Features/Orders/Create/
-  CreateOrderCommand.cs
-  CreateOrderHandler.cs
-  CreateOrderRequest.cs
-  CreateOrderResponse.cs
-  CreateOrderValidator.cs
-
-WebApi/Endpoints/Orders/
-  CreateOrderEndpoint.cs
-```
-
-The endpoint should translate HTTP input into an application request. The handler should own the use-case flow.
-
-## Adding A New Entity
-
-1. Add the entity under `src/Domain/Entities/`.
-2. Add `DbSet<T>` to `AppDbContext`.
-3. Add EF configuration under `src/Infrastructure/Persistence/Configurations/`.
-4. Expose the `DbSet<T>` through `IAppDbContext` if application handlers need it.
-5. Add or update application handlers.
-6. Add a migration.
-7. Add tests.
+See [`AGENTS.md`](./AGENTS.md) for the full, file-by-file walkthrough — it uses the real
+`Products` "Create" slice as the template (entity → EF configuration → `IAppDbContext` → DTOs →
+command → validator → handler → route constants → endpoint → tests), plus the current naming
+and validator conventions. `AGENTS.md` is written to be self-contained for both human
+contributors and AI coding agents.
 
 ## Boilerplate Decisions
 
@@ -750,7 +751,7 @@ These choices are intentional defaults for a starter project:
 - endpoints are discovered by reflection
 - handlers use EF Core through `IAppDbContext`
 - Mapster is used directly in handlers/projections
-- Sieve remains available for future list endpoints
+- Sieve powers filtering/sorting/pagination on the Products list endpoint and is ready to reuse on future list endpoints
 
 These are easy to change when a real project needs stricter boundaries or a different style.
 
